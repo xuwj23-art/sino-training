@@ -1,0 +1,1830 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI 培训站：Week 2《AI 能力是概率性的》与 Week 3《Prompt 结构学 · 五要素指令法》学习页面">
+  <title>Prompt 结构学 · Week 3</title>
+  <style>
+    :root {
+      --bg: oklch(97% 0.012 82);
+      --surface: oklch(99% 0.008 84);
+      --fg: oklch(25% 0.022 175);
+      --muted: oklch(54% 0.025 170);
+      --border: oklch(87% 0.025 80);
+      --accent: oklch(61% 0.17 38);
+      --accent-soft: oklch(93% 0.045 48);
+      --good: oklch(53% 0.12 145);
+      --warn: oklch(61% 0.13 78);
+      --shadow: 0 18px 60px oklch(35% 0.04 70 / 0.08);
+      --display: Iowan Old Style, Charter, "Noto Serif CJK SC", "Noto Serif CJK TC", "Songti SC", "PMingLiU", "Times New Roman", serif;
+      --body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang SC", "PingFang TC", "Noto Sans CJK SC", "Noto Sans CJK TC", "Hiragino Sans GB", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scrollbar-gutter: stable; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--fg);
+      background: var(--bg);
+      font-family: var(--body);
+      line-height: 1.72;
+      letter-spacing: 0;
+      font-synthesis: none;
+    }
+    html[lang="zh-CN"] body { font-family: "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", "PingFang SC", sans-serif; }
+    html[lang="zh-TW"] body { font-family: "Microsoft JhengHei UI", "Microsoft JhengHei", "Segoe UI", "PingFang TC", sans-serif; font-weight: 500; }
+    html[lang="zh-TW"] strong, html[lang="zh-TW"] th, html[lang="zh-TW"] h1, html[lang="zh-TW"] h2, html[lang="zh-TW"] h3, html[lang="zh-TW"] h4 { font-weight: 600; }
+    html[lang="zh-TW"] pre, html[lang="zh-TW"] code { font-family: "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans CJK TC", var(--mono); font-weight: 500; }
+    html[lang="zh-CN"] th, html[lang="zh-TW"] th,
+    html[lang="zh-CN"] .layer-index, html[lang="zh-TW"] .layer-index,
+    html[lang="zh-CN"] .sidebar-kicker, html[lang="zh-TW"] .sidebar-kicker,
+    html[lang="zh-CN"] .rail-kicker, html[lang="zh-TW"] .rail-kicker,
+    html[lang="zh-CN"] .eyebrow, html[lang="zh-TW"] .eyebrow { font-family: var(--body); }
+    a { color: inherit; }
+    button { font: inherit; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    .app-shell { min-height: 100vh; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 70px;
+      padding: 0 32px;
+      border-bottom: 1px solid var(--border);
+      background: oklch(98% 0.01 82 / 0.94);
+      backdrop-filter: blur(16px);
+    }
+    .brand-lockup { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--fg);
+      border-radius: 50%;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+    .brand-name { font-weight: 650; letter-spacing: 0.01em; }
+    .topbar-meta { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 13px; }
+    .topbar-meta .divider { width: 1px; height: 16px; background: var(--border); }
+    .language-switcher { display: inline-flex; align-items: center; flex: 0 0 auto; }
+    .language-switcher select {
+      height: 34px;
+      padding: 0 28px 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--fg);
+      background: var(--surface);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .language-switcher select:hover { border-color: var(--accent); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    .mobile-menu { display: none; }
+
+    .week-stepper { display: inline-flex; align-items: center; gap: 8px; min-width: 0; flex-shrink: 0; }
+    .step-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--fg);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+    .step-btn:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); transform: translateY(-1px); }
+    .step-btn:disabled { color: var(--muted); opacity: 0.48; cursor: not-allowed; }
+    .step-current { display: grid; min-width: 112px; justify-items: center; line-height: 1.15; }
+    .step-current strong { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; }
+    .step-current span { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+    .workspace { display: grid; grid-template-columns: 250px minmax(0, 1fr) 260px; width: min(1760px, calc(100% - 64px)); max-width: 1760px; margin: 0 auto; }
+    .sidebar {
+      position: sticky;
+      top: 70px;
+      align-self: start;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+      padding: 34px 24px 48px 32px;
+      border-right: 1px solid var(--border);
+    }
+    .sidebar-kicker, .rail-kicker, .eyebrow {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+    .side-progress { margin: 0 0 24px; color: var(--muted); font-size: 12px; }
+    .progress-track { height: 3px; margin-top: 10px; overflow: hidden; border-radius: 8px; background: var(--border); }
+    .progress-fill { width: 20%; height: 100%; background: var(--accent); transition: width 240ms ease; }
+    .nav-list, .nav-sublist { display: grid; gap: 3px; margin: 0; padding: 0; list-style: none; }
+    .nav-sublist { margin: 4px 0 12px 16px; }
+    .nav-link {
+      display: block;
+      padding: 8px 10px;
+      border-left: 2px solid transparent;
+      border-radius: 0 5px 5px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      text-decoration: none;
+      transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+    }
+    .nav-link:hover { color: var(--fg); background: oklch(92% 0.02 82 / 0.72); }
+    .nav-link.is-active { color: var(--fg); border-color: var(--fg); background: oklch(93% 0.025 82 / 0.76); font-weight: 650; }
+    .nav-link small { display: block; margin-bottom: 2px; color: inherit; font-family: var(--mono); font-size: 10px; opacity: 0.74; }
+
+    .main-column { min-width: 0; padding: 56px 64px 120px; }
+    .hero { padding: 20px 0 56px; border-bottom: 1px solid var(--border); }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 220px; align-items: end; gap: 48px; }
+    h1, h2, h3, h4 { margin: 0; color: var(--fg); font-family: var(--display); font-weight: 600; letter-spacing: 0; text-wrap: balance; }
+    h1 { max-width: 760px; font-size: 72px; line-height: 1.02; }
+    h2 { margin-top: 76px; padding-top: 6px; font-size: 44px; line-height: 1.12; }
+    h3 { margin-top: 48px; font-size: 32px; line-height: 1.2; }
+    h4 { margin-top: 28px; font-size: 21px; line-height: 1.25; }
+    .hero-lead { max-width: 680px; margin: 24px 0 0; color: var(--muted); font-size: 18px; }
+    .hero-note { padding: 16px 0 0 20px; border-left: 1px solid var(--accent); }
+    .hero-note strong { display: block; margin-bottom: 8px; font-size: 14px; }
+    .hero-note p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .article-section { scroll-margin-top: 96px; }
+    .section-intro { max-width: 940px; margin: 22px 0 0; color: var(--muted); font-size: 17px; }
+    .prose { max-width: 1080px; }
+    .prose p { max-width: none; margin: 18px 0; }
+    .prose ul, .prose ol { margin: 16px 0 22px; padding-left: 24px; }
+    .prose li { margin: 7px 0; }
+    .prose strong { font-weight: 700; }
+    .prose blockquote { margin: 24px 0; padding: 14px 20px; border-left: 3px solid var(--fg); color: var(--muted); background: var(--accent-soft); }
+    .layer-map { display: grid; grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr); align-items: stretch; gap: 8px; margin: 28px 0 18px; }
+    .layer-node { grid-column: span 1; min-width: 0; min-height: 122px; padding: 14px 12px; border: 1px solid var(--border); border-radius: 8px; color: var(--fg); background: var(--surface); text-align: left; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease; }
+    .layer-node:hover { border-color: var(--fg); background: oklch(95% 0.016 82); transform: translateY(-2px); }
+    .layer-node.is-active { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 10px 26px oklch(35% 0.04 70 / 0.08); }
+    .layer-node .layer-index { display: block; margin-bottom: 14px; color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+    .layer-node strong { display: block; font-family: var(--display); font-size: 20px; line-height: 1.1; white-space: nowrap; }
+    .layer-node small { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .layer-connector { align-self: center; height: 1px; background: var(--border); position: relative; }
+    .layer-connector::after { position: absolute; right: -1px; top: -3px; width: 7px; height: 7px; border-top: 1px solid var(--muted); border-right: 1px solid var(--muted); transform: rotate(45deg); content: ""; }
+    .layer-detail { min-height: 54px; margin: 0 0 28px; padding: 14px 16px; border-left: 2px solid var(--fg); color: var(--muted); background: oklch(95% 0.012 82); font-size: 13px; }
+    .scenario-table td:first-child { width: 18%; font-weight: 650; white-space: nowrap; }
+    .scenario-table td:nth-child(2) { width: 38%; }
+    .scenario-table td:nth-child(3) { width: 40%; }
+    .plain-explanations { max-width: 1080px; margin: 28px 0 42px; }
+    #section-2 > h3 { margin-top: 52px; font-size: 48px; line-height: 1.15; }
+    .plain-explanation { margin: 0 0 18px; padding: 0; }
+    .plain-explanation:last-child { margin-bottom: 0; }
+    .plain-explanation p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.72; text-wrap: pretty; }
+    .plain-explanation strong { color: var(--fg); font-weight: 700; white-space: nowrap; }
+    .plain-arrow { display: inline-block; margin: 0 9px; color: var(--muted); white-space: nowrap; }
+    .moe-board { margin: 30px 0 18px; padding: 24px 26px 26px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+    .moe-board-kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--muted); font-size: 13px; font-weight: 650; }
+    .moe-board-kicker::before { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); content: ""; }
+    .moe-image { display: block; width: 100%; height: auto; aspect-ratio: 1143 / 537; border: 1px solid var(--border); background: #fff; }
+    .moe-caption { display: grid; gap: 6px; margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .moe-caption strong { color: var(--fg); }
+    .moe-legend { font-size: 12px; }
+    .moe-legend b { color: var(--fg); font-family: var(--mono); font-weight: 600; }
+    .moe-board-note { margin: 0 0 24px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .overview-table table { table-layout: fixed; }
+    .overview-table th:nth-child(1), .overview-table td:nth-child(1) { width: 12%; }
+    .overview-table th:nth-child(2), .overview-table td:nth-child(2) { width: 28%; }
+    .overview-table th:nth-child(3), .overview-table td:nth-child(3) { width: 28%; }
+    .overview-table th:nth-child(4), .overview-table td:nth-child(4) { width: 32%; }
+    .wish-table th:first-child, .wish-table td:first-child { width: 34%; }
+    .context-flow { display: grid; grid-template-columns: 1fr 42px 1fr 42px 1fr 42px 1fr; align-items: center; gap: 10px; margin: 28px 0 12px; }
+    .context-step { min-height: 128px; padding: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); text-align: left; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease; }
+    .context-step:hover { border-color: var(--fg); transform: translateY(-2px); }
+    .context-step.is-active { border-color: var(--fg); background: oklch(95% 0.016 82); }
+    .context-step .step-no { display: block; margin-bottom: 14px; color: var(--muted); font-family: var(--mono); font-size: 10px; }
+    .context-step strong { display: block; font-family: var(--display); font-size: 20px; line-height: 1.1; }
+    .context-step small { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .context-link { height: 1px; background: var(--border); position: relative; }
+    .context-link::after { position: absolute; right: -1px; top: -3px; width: 7px; height: 7px; border-top: 1px solid var(--muted); border-right: 1px solid var(--muted); transform: rotate(45deg); content: ""; }
+    .context-caption { min-height: 40px; margin: 0 0 24px; padding: 10px 13px; border-left: 2px solid var(--fg); color: var(--muted); background: oklch(95% 0.012 82); font-size: 12px; }
+    .task-example { margin: 24px 0; padding: 16px 18px; border-left: 2px solid var(--fg); color: var(--muted); background: oklch(95% 0.012 82); font-size: 14px; }
+    .task-example-label { margin-bottom: 8px; color: var(--fg); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+    code { padding: 2px 5px; border: 1px solid var(--border); border-radius: 4px; background: oklch(94% 0.014 82); font-family: var(--mono); font-size: 0.9em; }
+    pre {
+      max-width: 100%;
+      margin: 24px 0;
+      padding: 20px 22px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: oklch(92% 0.015 82);
+      background: oklch(22% 0.025 175);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: normal;
+      word-break: normal;
+      tab-size: 2;
+    }
+    .table-wrap { max-width: 100%; margin: 26px 0; overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; min-width: 0; font-size: 14px; }
+    th, td { padding: 13px 15px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; overflow-wrap: normal; word-break: normal; }
+    th { white-space: nowrap; }
+    th:first-child, td:first-child { white-space: nowrap; }
+    [data-od-id$="-table"] table { min-width: 100%; table-layout: auto; }
+    th { color: var(--muted); background: oklch(95% 0.014 82); font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.05em; }
+    tr:last-child td { border-bottom: 0; }
+    .callout { margin: 28px 0; padding: 20px 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+    .callout-label { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 10px; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .callout-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+    .callout p { margin: 0; }
+    .slot-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 28px 0; }
+    .slot-card { min-height: 142px; padding: 16px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); }
+    .slot-card strong { display: block; margin-bottom: 8px; font-family: var(--display); font-size: 20px; }
+    .slot-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .section-rule { width: 100%; height: 1px; margin: 72px 0 0; background: var(--border); }
+    .rail { padding: 64px 28px 48px 24px; }
+    .rail-card { position: sticky; top: 104px; }
+    .rail-title { margin: 0 0 16px; font-family: var(--display); font-size: 22px; }
+    .rail-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .rail-list a { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 9px; align-items: start; color: var(--muted); font-size: 12px; line-height: 1.35; text-decoration: none; }
+    .rail-list a:hover { color: var(--fg); }
+    .rail-index { color: var(--muted); font-family: var(--mono); font-size: 10px; }
+    .rail-divider { height: 1px; margin: 26px 0; background: var(--border); }
+    .rail-tip { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .week-panel { display: none; min-height: 48vh; padding: 64px 0; }
+    .week-panel.is-visible { display: block; }
+    .week-panel h2 { margin-top: 0; }
+    #week2Panel > p, #week4Panel > p { max-width: 560px; color: var(--muted); }
+    .week-panel .panel-note { margin-top: 24px; padding: 18px 20px; border: 1px dashed var(--border); border-radius: 7px; background: var(--surface); }
+    .footer { margin-top: 84px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+
+    /* Week 2 additions */
+    .nav-week[hidden] { display: none; }
+    .rail-card.is-hidden { display: none; }
+    .slot-grid-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 28px 0; }
+    .slot-grid-three .slot-card { min-height: 128px; }
+    .shot-board { margin: 30px 0 18px; padding: 24px 26px 26px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+    .shot-kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--muted); font-size: 13px; font-weight: 650; }
+    .shot-kicker::before { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); content: ""; }
+    .shot-image { display: block; width: 100%; height: auto; border: 1px solid var(--border); background: #fff; }
+    .shot-caption { display: grid; gap: 6px; margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .shot-caption strong { color: var(--fg); }
+    .shots-table td:first-child, .shots-table th:first-child { white-space: normal; }
+    .demo-flow { display: grid; grid-template-columns: 1fr 42px 1fr 42px 1fr; align-items: center; gap: 10px; margin: 28px 0 12px; }
+    .demo-step { min-height: 128px; padding: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); text-align: left; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease; }
+    .demo-step:hover { border-color: var(--fg); transform: translateY(-2px); }
+    .demo-step.is-active { border-color: var(--fg); background: oklch(95% 0.016 82); }
+    .demo-step .step-no { display: block; margin-bottom: 14px; color: var(--muted); font-family: var(--mono); font-size: 10px; }
+    .demo-step strong { display: block; font-family: var(--display); font-size: 19px; line-height: 1.28; }
+    .demo-step small { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .demo-link { height: 1px; background: var(--border); position: relative; }
+    .demo-link::after { position: absolute; right: -1px; top: -3px; width: 7px; height: 7px; border-top: 1px solid var(--muted); border-right: 1px solid var(--muted); transform: rotate(45deg); content: ""; }
+    .demo-caption { min-height: 40px; margin: 0 0 24px; padding: 10px 13px; border-left: 2px solid var(--fg); color: var(--muted); background: oklch(95% 0.012 82); font-size: 12px; }
+
+    @media (max-width: 1180px) {
+      .workspace { grid-template-columns: 220px minmax(0, 1fr); }
+      .rail { display: none; }
+      .layer-map, .context-flow, .demo-flow { grid-template-columns: 1fr; gap: 6px; }
+      .layer-connector, .context-link, .demo-link { width: 1px; height: 18px; justify-self: center; }
+      .layer-connector::after, .context-link::after, .demo-link::after { right: auto; left: -3px; top: auto; bottom: -1px; transform: rotate(135deg); }
+      .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .slot-card:last-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 1640px) and (min-width: 1181px) {
+      .hero-grid { display: block; }
+      .hero-note { max-width: 360px; margin-top: 32px; }
+      .layer-map, .context-flow, .demo-flow { grid-template-columns: 1fr; gap: 6px; }
+      .layer-connector, .context-link, .demo-link { width: 1px; height: 18px; justify-self: center; }
+      .layer-connector::after, .context-link::after, .demo-link::after { right: auto; left: -3px; top: auto; bottom: -1px; transform: rotate(135deg); }
+      .moe-board { padding: 16px; }
+      .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .slot-card:last-child { grid-column: 1 / -1; }
+    }
+    @media (min-width: 981px) {
+      h1 { white-space: nowrap; }
+    }
+    @media (max-width: 980px) {
+      .main-column { padding-inline: 26px; }
+      .prose { max-width: none; }
+      .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .slot-card:last-child { grid-column: 1 / -1; }
+      .moe-board { padding: 16px; }
+    }
+    @media (max-width: 760px) {
+      .topbar { min-height: 62px; padding: 0 16px; }
+      .topbar-meta { display: none; }
+      .mobile-menu { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); cursor: pointer; }
+      .mobile-menu span, .mobile-menu span::before, .mobile-menu span::after { display: block; width: 16px; height: 1px; background: var(--fg); content: ""; }
+      .mobile-menu span::before { transform: translateY(-5px); }
+      .mobile-menu span::after { transform: translateY(4px); }
+      .week-stepper { gap: 5px; }
+      .step-current { min-width: 90px; }
+      .step-btn { width: 38px; height: 38px; }
+      .workspace { display: block; }
+      .sidebar { position: fixed; inset: 62px auto 0 0; z-index: 20; width: min(84vw, 300px); height: auto; padding: 26px 22px 42px; background: var(--bg); box-shadow: 16px 0 36px oklch(30% 0.04 70 / 0.12); transform: translateX(-102%); transition: transform 220ms ease; }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-column { padding: 36px 18px 72px; }
+      .hero { padding-top: 6px; }
+      .hero-grid { display: block; }
+      .hero-note { margin-top: 30px; }
+      h1 { font-size: clamp(38px, 12vw, 56px); }
+      h2 { margin-top: 56px; font-size: 32px; }
+      h3 { margin-top: 38px; font-size: 25px; }
+      .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .slot-card:last-child { grid-column: 1 / -1; }
+      .layer-map { grid-template-columns: 1fr; gap: 6px; }
+      .layer-connector { width: 1px; height: 18px; justify-self: center; }
+      .layer-connector::after { right: -3px; top: auto; bottom: -1px; transform: rotate(135deg); }
+      .context-flow { grid-template-columns: 1fr; gap: 6px; }
+      .context-link { width: 1px; height: 18px; justify-self: center; }
+      .context-link::after { right: auto; left: -3px; top: auto; bottom: -1px; transform: rotate(135deg); }
+      .demo-flow { grid-template-columns: 1fr; gap: 6px; }
+      .demo-link { width: 1px; height: 18px; justify-self: center; }
+      .demo-link::after { right: auto; left: -3px; top: auto; bottom: -1px; transform: rotate(135deg); }
+      .slot-grid-three { grid-template-columns: 1fr; }
+      .topbar { gap: 8px; padding: 0 12px; }
+      .brand-lockup { gap: 6px; }
+      .brand-mark { width: 32px; height: 32px; }
+      .brand-name { max-width: 86px; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+      .mobile-menu { width: 44px; height: 44px; flex: 0 0 44px; }
+      .week-stepper { gap: 4px; }
+      .step-current { min-width: 78px; }
+      .step-btn { width: 44px; height: 44px; flex: 0 0 44px; }
+      pre { padding: 16px; font-size: 12px; overflow-wrap: normal; word-break: normal; }
+    }
+    @media (max-width: 360px) {
+      .brand-name { display: none; }
+      .step-current { min-width: 64px; }
+      .step-current span { max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    }
+    /* Desktop uses one fixed canvas. Smaller desktop windows scale it as a whole so the layout does not change shape. */
+    @media (min-width: 1181px) {
+      .workspace {
+        width: 1760px;
+        max-width: none;
+        grid-template-columns: 250px minmax(0, 1fr) 260px;
+        margin-inline: auto;
+      }
+      .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 48px; }
+      .hero-note { max-width: none; margin-top: 0; }
+      .layer-map { grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr); }
+      .moe-board { padding: 20px; }
+      .context-flow { grid-template-columns: 1fr 42px 1fr 42px 1fr 42px 1fr; }
+      .demo-flow { grid-template-columns: 1fr 42px 1fr 42px 1fr; }
+      .layer-connector, .context-link, .demo-link { width: auto; height: 1px; justify-self: auto; }
+      .layer-connector::after, .context-link::after, .demo-link::after { right: -1px; left: auto; top: -3px; bottom: auto; transform: rotate(45deg); }
+      .slot-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .slot-card:last-child { grid-column: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar" data-od-id="topbar">
+      <div class="brand-lockup">
+        <button class="mobile-menu" id="mobileMenu" data-od-id="mobile-menu" type="button" aria-label="打开章节导航" aria-controls="sidebar" aria-expanded="false"><span></span></button>
+        <div class="brand-mark" aria-hidden="true">PS</div>
+        <div class="brand-name">Prompt 结构学</div>
+      </div>
+      <div class="week-stepper" data-od-id="week-stepper" aria-label="周次切换">
+        <button class="step-btn" id="prevWeek" data-od-id="prev-week" type="button" aria-label="切换到上一周">←</button>
+        <div class="step-current" aria-live="polite"><strong id="weekLabel">WEEK 3</strong><span id="weekTitle">五要素指令法</span></div>
+        <button class="step-btn" id="nextWeek" data-od-id="next-week" type="button" aria-label="切换到下一周">→</button>
+      </div>
+      <label class="language-switcher" for="languageSelect">
+        <span class="sr-only">语言</span>
+        <select id="languageSelect" aria-label="语言切换">
+          <option value="zh-CN">简体中文</option>
+          <option value="zh-TW">繁體中文</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar" id="sidebar" data-od-id="sidebar">
+        <p class="sidebar-kicker">本周导览</p>
+        <p class="side-progress"><span id="progressLabel">1 / 5</span> · 阅读进度</p>
+        <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+        <nav aria-label="章节导航">
+          <div class="nav-week" id="navWeek3" data-nav-week="3">
+            <ul class="nav-list">
+              <li><a class="nav-link is-active" href="#section-1" data-section="section-1"><small>01</small>从「问问题」到「下指令」</a></li>
+              <li><a class="nav-link" href="#section-2" data-section="section-2"><small>02</small>指令层级</a></li>
+              <li>
+                <a class="nav-link" href="#section-4" data-section="section-4"><small>03</small>五要素详解</a>
+                <ul class="nav-sublist">
+                  <li><a class="nav-link" href="#role" data-section="role">3.1 角色</a></li>
+                  <li><a class="nav-link" href="#context" data-section="context">3.2 背景</a></li>
+                  <li><a class="nav-link" href="#task" data-section="task">3.3 任务</a></li>
+                  <li><a class="nav-link" href="#format" data-section="format">3.4 格式</a></li>
+                  <li><a class="nav-link" href="#example" data-section="example">3.5 示例</a></li>
+                </ul>
+              </li>
+              <li><a class="nav-link" href="#section-5" data-section="section-5"><small>04</small>Before / After</a></li>
+              <li><a class="nav-link" href="#section-6" data-section="section-6"><small>05</small>小结</a></li>
+            </ul>
+          </div>
+          <div class="nav-week" id="navWeek2" data-nav-week="2" hidden>
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#w2-s1" data-section="w2-s1" data-w2-nav="nav1"><small>01</small>什么是 Token</a></li>
+              <li><a class="nav-link" href="#w2-s2" data-section="w2-s2" data-w2-nav="nav2"><small>02</small>SharpPoint vs SharePoint</a></li>
+              <li><a class="nav-link" href="#w2-s3" data-section="w2-s3" data-w2-nav="nav3"><small>03</small>下一 Token 概率预测</a></li>
+              <li><a class="nav-link" href="#w2-s4" data-section="w2-s4" data-w2-nav="nav4"><small>04</small>幻觉、谄媚、从不说不知道</a></li>
+              <li>
+                <a class="nav-link" href="#w2-s5" data-section="w2-s5" data-w2-nav="nav5"><small>05</small>公司场景的三条机制</a>
+                <ul class="nav-sublist">
+                  <li><a class="nav-link" href="#w2-m1" data-section="w2-m1" data-w2-nav="navM1">5.1 注意力稀释</a></li>
+                  <li><a class="nav-link" href="#w2-m2" data-section="w2-m2" data-w2-nav="navM2">5.2 多模态转译</a></li>
+                  <li><a class="nav-link" href="#w2-m3" data-section="w2-m3" data-w2-nav="navM3">5.3 摘要化与覆盖</a></li>
+                </ul>
+              </li>
+              <li><a class="nav-link" href="#w2-s6" data-section="w2-s6" data-w2-nav="nav6"><small>06</small>四张截图对照</a></li>
+              <li><a class="nav-link" href="#w2-s7" data-section="w2-s7" data-w2-nav="nav7"><small>07</small>演示</a></li>
+              <li><a class="nav-link" href="#w2-s8" data-section="w2-s8" data-w2-nav="nav8"><small>08</small>引用与出处</a></li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="main-column" id="content" data-od-id="main-content">
+        <div id="week3Panel" class="week-panel is-visible" data-week="3">
+          <section class="hero" data-od-id="hero">
+            <div class="hero-grid">
+              <div>
+                <p class="eyebrow">Week 3 · 五要素指令法</p>
+                <h1 data-od-id="page-title">Prompt 结构学<br>五要素指令法</h1>
+                <p class="hero-lead">把“看起来完成”变成“可以检查”。这周从角色、背景、任务、格式、示例五个槽位出发，让模型知道该往哪里续。</p>
+              </div>
+              <div class="hero-note" data-od-id="hero-note">
+                <strong>本周目标</strong>
+                <p>把五个槽位填满，让“什么叫做完”变成可检查的东西。</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="section-1" class="article-section prose" data-od-id="section-1">
+            <h2>1. 从「问问题」到「下指令」</h2>
+            <p class="section-intro">Week 2 结论回顾：模型是续写机器，不是思考机器。你丢给它的那段字，决定了它往哪个方向续。</p>
+            <ul>
+              <li>模型是续写机器，不是思考机器</li>
+              <li>它同时追求：正确、流畅、让你满意</li>
+              <li>没出处的内容只能当草稿</li>
+              <li>专名会撞车、长表会漏列、无检索会编、追问就改口</li>
+            </ul>
+            <div class="callout" data-od-id="section-1-problem">
+              <div class="callout-label">本周要解决的问题</div>
+              <p>你丢给它的那段字，决定了它往哪个方向续。</p>
+            </div>
+            <p>现在多数人的用法：</p>
+            <pre>帮我看这份开户文件
+这封客邮这样回可以吗
+帮我整理一下
+你确定吗</pre>
+            <p>这四句几乎没告诉它怎么工作：它不知道你是谁、该用哪份清单、什么叫“看完”，也不知道找不到时该不该停。于是它容易退回默认做法：写一段流畅、让你舒服、<strong>听起来像审完了的话</strong>。</p>
+            <p><strong>本周目标：</strong>把五个槽位填满，让“什么叫做完”变成可检查的东西。</p>
+          </section>
+
+          <section id="section-2" class="article-section prose" data-od-id="section-2">
+            <h2>2. 指令层级：谁说了算？</h2>
+            <p class="section-intro">你打进对话框的字很重要，但它只是其中一层；上面还有产品和团队预先写好的规矩。</p>
+            <div class="layer-map" data-od-id="instruction-layer-map" aria-label="指令层级图">
+              <button class="layer-node is-active" type="button" data-layer="root"><span class="layer-index">01 · 底线</span><strong>Root</strong><small>不能改写的安全边界</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-layer="system"><span class="layer-index">02 · 默认</span><strong>System</strong><small>产品的默认性格</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-layer="developer"><span class="layer-index">03 · 规则</span><strong>Developer</strong><small>团队写入的 SOP</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-layer="user"><span class="layer-index">04 · 工单</span><strong>User</strong><small>你定义本次任务</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-layer="materials"><span class="layer-index">05 · 材料</span><strong>工具 / 文件</strong><small>只提供事实证据</small></button>
+            </div>
+            <p id="layerDetail" class="layer-detail" aria-live="polite">Root：就算你要求它编一个景点营业时间，也不能把不知道的事说成真的。</p>
+            <div class="table-wrap" data-od-id="hierarchy-table">
+              <table>
+                <thead><tr><th>层级</th><th>一句话</th><th>你能改吗</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Root</strong></td><td>出厂红线。不帮造假、不教违法</td><td>不可修改</td></tr>
+                  <tr><td><strong>System</strong></td><td>产品默认性格。“我是助手、要有帮助、把话说完”</td><td>不可修改</td></tr>
+                  <tr><td><strong>Developer</strong></td><td>部门 SOP。搭工具 / 自定义 GPT / Skill 的人写的规则</td><td>开发者可写</td></tr>
+                  <tr><td><strong>User</strong></td><td>你这张工单。这一单做什么、参考什么、怎么输出</td><td>你可以修改</td></tr>
+                  <tr><td><strong>工具 / 文件</strong></td><td>桌上的材料。只供事实，不能改写规则</td><td>你上传材料</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h3>几个关键理解</h3>
+            <div class="plain-explanations" data-od-id="plain-layer-explanations">
+              <article class="plain-explanation"><p><strong>它为什么有些事就是不做？</strong><span class="plain-arrow" aria-hidden="true">→</span>有些底线是产品出厂就写好的，你再怎么说，也不能让它帮你造假或教人违法。</p></article>
+              <article class="plain-explanation"><p><strong>为什么换个产品，口气就变了？</strong><span class="plain-arrow" aria-hidden="true">→</span>每个产品都有默认性格；有的爱把话说满，有的更简短，不是这句提示词临时决定的。</p></article>
+              <article class="plain-explanation"><p><strong>为什么客服机器人总说“按流程”？</strong><span class="plain-arrow" aria-hidden="true">→</span>团队把规则写进开发者层，所以你追问“能不能通融”，它还是得按那套规则做。</p></article>
+              <article class="plain-explanation"><p><strong>那我写的 User prompt 还有用吗？</strong><span class="plain-arrow" aria-hidden="true">→</span>有用：它决定这次做什么、看什么材料、交什么<span class="keep-word">格式</span>；上面的规矩不能碰。</p></article>
+              <article class="plain-explanation"><p><strong>PDF 里的命令算不算新指令？</strong><span class="plain-arrow" aria-hidden="true">→</span>不算。文件只是证据，里面写“请忽略规则”，仍然只是纸上的一句话。</p></article>
+            </div>
+            <h3>用周末旅行计划走一遍</h3>
+            <div class="table-wrap" data-od-id="hierarchy-scenario-table">
+              <table class="scenario-table">
+                <thead><tr><th>层级</th><th>你在使用时做的事</th><th>模型应该怎么做</th></tr></thead>
+                <tbody>
+                  <tr><td>Root</td><td>你让它策划怎么破坏景区、放火烧山。</td><td>会明确拒绝，并改为提供合法的安全或保护建议。</td></tr>
+                  <tr><td>System</td><td>你只说“帮我安排周末”。</td><td>默认用温和、友善、周全的语气回应，而不是只回一句“好的”。</td></tr>
+                  <tr><td>Developer</td><td>产品规定：“路线要有依据，不替用户订票。”</td><td>即使你追问“直接帮我买吧”，也仍按这条规则做。</td></tr>
+                  <tr><td>User</td><td>你说“周六带孩子去杭州，预算 1000 元，给两套路线”。</td><td>按你的时间、预算和数量安排，不擅自换目标。</td></tr>
+                  <tr><td>工具 / 文件</td><td>你上传景区公告和地图。</td><td>只把营业时间、地址当事实，不把文件里的话当成新规则。</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="section-4" class="article-section prose" data-od-id="section-4">
+            <h2>3. 五要素详解</h2>
+            <div class="slot-grid" data-od-id="slot-map">
+              <article class="slot-card" data-od-id="slot-role"><strong>角色</strong><p>先说清它扮演谁、不能做什么、缺件怎么写。</p></article>
+              <article class="slot-card" data-od-id="slot-context"><strong>背景</strong><p>把这次要用的事实和材料放到它眼前。</p></article>
+              <article class="slot-card" data-od-id="slot-task"><strong>任务</strong><p>说清先做什么，以及做到什么才算完成。</p></article>
+              <article class="slot-card" data-od-id="slot-format"><strong>格式</strong><p>给它固定的格子，结果方便检查和继续处理。</p></article>
+              <article class="slot-card" data-od-id="slot-example"><strong>示例</strong><p>给一条合格样例，再给一条反例让它避开。</p></article>
+            </div>
+
+            <div id="role" class="article-section" data-od-id="role">
+              <h3>3.1 角色（Role）</h3>
+              <h4>底层机制：MoE（前台分单）</h4>
+              <p><strong>把它当成前台分单就够了：</strong>你把问题交进来，前台先看它属于哪类事，只把它交给合适的小组，结果再递回你手上。</p>
+              <figure class="moe-board" data-od-id="moe-simple-diagram">
+                <p class="moe-board-kicker">一张问题单怎么走</p>
+                <img class="moe-image" src="week3/moe-routing-clean.png" alt="问题输入后先经过路由器，再在每一层选择一个专家小组，最后输出结果">
+                <figcaption class="moe-caption">
+                  <span><strong>把图当成前台分单：</strong>问题先送进来，前台判断该找哪类小组；被选中的小组处理，其他小组先不动。</span>
+                  <span class="moe-legend"><b>Input</b> = 问题　<b>Router</b> = 前台　<b>Expert</b> = 小组　<b>Output</b> = 结果</span>
+                </figcaption>
+              </figure>
+              <p class="moe-board-note"><strong>记住一句话：</strong>不是所有小组一起回答，哪类问题就先找哪类能力。角色提示词做的，就是把这次要做的工作说清楚。</p>
+              <h4>角色在做什么</h4>
+              <p>开头说清三件事：扮演谁、不越权、找不到时怎么写。比如“只做初筛，不做审批；缺件写未找到”。</p>
+              <p>效果：</p>
+              <ul><li>回答更像你要的工作口吻，不会一上来就装成万能助手</li><li>权限先划清，缺口时更容易写“未找到”，而不是顺手编一个</li></ul>
+              <h4>但作用有限</h4>
+              <ul><li>它不知道的事，换个角色也不会突然知道</li><li>只写“合规专家”，不等于它知道你们内部的专名，甚至可能用合规口气编出条文号</li><li>角色也不会自动让它变诚实，缺口规则仍要明写</li></ul>
+              <blockquote>比如 SharpPoint：角色只能把方向推向“金融合规”，却叫不醒它记忆里没有的内部专名。要分清 SharpPoint 和 SharePoint，得把事实写进<strong>背景</strong>。</blockquote>
+              <h4>写法</h4>
+              <pre>普通写法：你是一个有帮助的 AI 助手，请尽可能完整地回答。</pre>
+              <pre>限定写法：你是本公司开户文件的初筛员，不是审批人，不是客户经理，不是投资顾问。
+你只对照我给出的《开户文件清单》做缺件检查。
+你不得给出开户是否通过的结论，不得提供投资建议。
+找不到的项目写「未在本次材料中找到」，不准编文件名、不准编条文号。</pre>
+              <p>三样东西缺一不可：<strong>你是谁 / 你不是谁 / 缺口时默认做什么</strong>。</p>
+            </div>
+
+            <div id="context" class="article-section" data-od-id="context">
+              <h3>3.2 背景（Context）</h3>
+              <h4>从层级过渡</h4>
+              <p>在这一单里，你可以指定模型<strong>参考什么内容</strong>。它不只会看自己“记得的”，也可以看你放进来的资料。</p>
+              <p>所以不要把所有材料一股脑塞进去，只挑这次真正用得上的。</p>
+              <h4>这也是知识库在做的事</h4>
+              <div class="context-flow" data-od-id="knowledge-flow" role="group" aria-label="知识库处理流程">
+                <button class="context-step is-active" type="button" data-context-step="1"><span class="step-no">01 · 收集</span><strong>资料库</strong><small>许多份文档、表格、SOP</small></button>
+                <span class="context-link" aria-hidden="true"></span>
+                <button class="context-step" type="button" data-context-step="2"><span class="step-no">02 · 拆解</span><strong>切成小片段</strong><small>按标题、页码、段落分块</small></button>
+                <span class="context-link" aria-hidden="true"></span>
+                <button class="context-step" type="button" data-context-step="3"><span class="step-no">03 · 匹配</span><strong>找到最相关的</strong><small>只挑和本次问题有关的内容</small></button>
+                <span class="context-link" aria-hidden="true"></span>
+                <button class="context-step" type="button" data-context-step="4"><span class="step-no">04 · 喂给模型</span><strong>User prompt</strong><small>把事实放到模型眼前</small></button>
+              </div>
+              <p id="contextCaption" class="context-caption" aria-live="polite">点击流程节点：先把整批材料收进资料库，再逐层缩小到本次任务需要的事实。</p>
+              <p>知识库做的事情很简单：从一大堆资料里挑出这次最相关的几段，放到模型眼前。这样答案有依据，不用靠它凭印象猜。</p>
+              <h4>背景在做什么</h4>
+              <p>模型不会自动知道你们公司的内部资料。没有把 SharpPoint、7709.HK 和开户清单放进这次对话，它只能凭印象猜。</p>
+              <p>背景就是把事实放到它眼前；眼前出现过的专名和清单，回答时才更可能被用到。</p>
+              <h4>不是越多越好</h4>
+              <p>材料越长，重点越容易被淹没。把无关内容删掉，关键事实反而更容易被看见。</p>
+              <h4>要写的</h4>
+              <div class="table-wrap" data-od-id="context-include-table">
+                <table><thead><tr><th>类别</th><th>示例</th></tr></thead><tbody>
+                  <tr><td>对象类型</td><td>公司客户 / 个人客户；BVI / HK</td></tr>
+                  <tr><td>当前事项</td><td>开户初筛 / 对账差异 / 客邮起草</td></tr>
+                  <tr><td>参照文件</td><td>哪版 checklist、哪份 SOP</td></tr>
+                  <tr><td>已知约束</td><td>去识别化、不得用真实 CID、不对外发送</td></tr>
+                  <tr><td>易混专名</td><td>SharpPoint ≠ SharePoint；先写全称</td></tr>
+                </tbody></table>
+              </div>
+              <h4>不要写的</h4>
+              <ul><li>客户姓名、证件号、账户号、持仓、真实地址</li><li>你自己的猜测（“我认为 7709.HK 就是普洛斯”→ 模型会当事实先验顺着编）</li></ul>
+              <blockquote><strong>短、结构化、可扫描。</strong>用列表，不用叙事。</blockquote>
+            </div>
+
+            <div id="task" class="article-section" data-od-id="task">
+              <h3>3.3 任务（Task）</h3>
+              <h4>核心问题</h4>
+              <p>模型会尽快交出一份“看起来做完了”的答案。你只说结果，不说检查过程，它就可能走最短的路，让你先看到一句顺口的结论。</p>
+              <h4>你说得太宽，模型会走捷径</h4>
+              <p>比如你说“帮我看完 6 份开户材料，告诉我缺什么”，它可能只回“资料基本齐全”，却没有逐项核对，也没有文件名和页码。</p>
+              <h4>“许愿柳”：愿望实现了，方式却走样</h4>
+              <p>先让它交答案，再让它自己补标准，就像先射箭后画靶。下面是同一个愿望常见的三种交差方式：</p>
+              <div class="table-wrap wish-table" data-od-id="wish-table">
+                <table>
+                  <thead><tr><th>你说的愿望</th><th>模型可能怎样“完成”</th></tr></thead>
+                  <tbody>
+                    <tr><td>“看完开户文件”</td><td>回一句“已全面审阅，可以进入下一步”，但没有逐项对照。</td></tr>
+                    <tr><td>“测试要通过”</td><td>先假定通过，再补一段看起来像测试说明的文字。</td></tr>
+                    <tr><td>“把字段对齐”</td><td>漏掉几列后，直接宣布“最终模板”。</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <h4>解法：验收标准写在前面，不准事后改</h4>
+              <pre>本次何谓完成（先写在这里，不准事后改）：
+- 清单一项不漏
+- 「已提供」必须有文件名和页码
+- 不准出现「可以开户 / 资料齐全 / 最终」
+- 材料外的文件名视为编造，整份作废
+
+然后只做一件事：按清单逐项标注状态。
+状态只允许三个值：已提供 / 未找到 / 无法判断。
+「无法判断」必须写原因。</pre>
+              <p>模型必须在满足条件的情况下才能声明通过。不能偷懒、不能走捷径、不能自己圆回自己的结果。</p>
+              <h4>坏任务长这样</h4>
+              <pre>混合任务：帮我看这份开户文件，顺便把缺失的补上，再写封邮件给客户，判断一下能不能开。</pre>
+              <p>四件事揉成一句，就是把四个愿望塞进一张工单。模型会用最快的方式把它们一起说完，过程很容易被跳过。</p>
+              <blockquote>自检：任务写完后，<strong>你能不能检查“缺件表里有没有清单上的每一行”？</strong>检查不了 = 还在问问题。</blockquote>
+            </div>
+
+            <div id="format" class="article-section" data-od-id="format">
+              <h3>3.4 格式（Format）</h3>
+              <h4>核心目的：让人和程序都能一眼检查</h4>
+              <p>“整体来看资料大致齐全”听起来顺，却没法逐格检查。固定写成 <code>状态 = "未找到"</code> 这种有限选项，后面的人和程序才知道该怎么处理。</p>
+              <pre>人类语言 → AI 处理 → 固定格式输出 → 脚本提取 → 自动化工作流</pre>
+              <p>没有固定格式，答案就会变成一大段话：人要重新找重点，程序也不知道从哪里取值。</p>
+              <h4>常用约束</h4>
+              <ul><li>用表格，不用段落</li><li>必须有“出处”列</li><li>缺件 / 异常置顶</li><li>禁止句式：“综上所述”“建议贵司”“最终模板”</li><li>末尾附“未做事项”</li></ul>
+              <h4>开户初筛骨架</h4>
+              <pre>1. 缺件置顶表
+2. 完整对照表（编号 / 要求 / 状态 / 出处 / 备注）
+3. 无法判断的项目
+4. 需要人工复核的点
+5. 我没有做的事</pre>
+              <p>第 5 项提前写清“哪些事没做”，模型就不容易顺手越界。</p>
+              <blockquote>格式负责让结果能继续流转，出处和清单负责证明每个格子有事实依据。两段都要写。</blockquote>
+            </div>
+
+            <div id="example" class="article-section" data-od-id="example">
+              <h3>3.5 示例（Example）</h3>
+              <h4>作用</h4>
+              <p>示例就是给模型看一眼“合格答案长什么样”。它刚看过的那一行表格，通常比“请专业、严谨、全面”更能影响下一次输出。</p>
+              <h4>正例 + 反例都要给</h4>
+              <p><strong>正例：</strong></p>
+              <pre>| 03 | 公司注册证书 | 已提供 | cert_incorp.pdf 第 1 页 | 公司名与封面一致 |
+| 07 | 董事名册 | 未找到 | — | 本次材料未见 Register of Directors |</pre>
+              <p><strong>反例：</strong></p>
+              <pre>越权示例：「经全面审阅，客户开户资料已基本齐全，可进入下一步。」
+不合格原因：无对照表、无出处、越权结论。</pre>
+              <h4>五要素组合 = 完整套件</h4>
+              <div class="table-wrap" data-od-id="complete-kit-table"><table><thead><tr><th>组件</th><th>作用</th></tr></thead><tbody>
+                <tr><td>验收标准（任务）</td><td>定义什么叫做完</td></tr>
+                <tr><td>测试流程（格式）</td><td>定义怎么检查</td></tr>
+                <tr><td>样板参考（示例）</td><td>定义好的输出长什么样</td></tr>
+              </tbody></table></div>
+              <p>三样放在一起，答案更容易按你的规则来，也更容易发现编造和讨好式套话。</p>
+            </div>
+          </section>
+
+          <section id="section-5" class="article-section prose" data-od-id="section-5">
+            <h2>4. Before / After</h2>
+            <p class="section-intro"><strong>核心逻辑：</strong>同一份材料、同一个模型，唯一变量 = 五个槽位有没有填。</p>
+            <div class="table-wrap" data-od-id="before-after-table"><table><thead><tr><th></th><th>Before</th><th>After</th></tr></thead><tbody>
+              <tr><td>输出</td><td>一段像样的话</td><td>一张可复核的表</td></tr>
+              <tr><td>可检查性</td><td>无法逐项核对</td><td>每格有出处</td></tr>
+              <tr><td>缺件</td><td>被流畅叙述掩盖</td><td>置顶</td></tr>
+            </tbody></table></div>
+            <h3>Before</h3>
+            <pre>帮我看这份开户文件。</pre>
+            <p>看输出时只标四件事：</p>
+            <ol><li>有没有给出“可以开户 / 资料齐全”这类结论</li><li>出现的文件名在材料里是否真的存在</li><li>缺件是置顶还是埋在“整体而言”之后</li><li>有没有“我完全明白了 / 已全面审阅 / 最终”</li></ol>
+            <blockquote>预期是一次<strong>成功的失败</strong>。它在优化“你觉得它看过了”，不是优化“清单上每一行都有下落”。</blockquote>
+            <h3>After</h3>
+            <pre>【角色】
+你是本公司开户文件初筛员。
+你不是审批人，不是客户经理，不是投资顾问，不是律师。
+你只对照我提供的《开户文件清单》做缺件检查。
+你不得判断「可否开户」，不得提供投资建议或投资意见，不得补造任何文件或条款。
+
+【背景】
+- 客户类型：公司客户（去识别化样本，代号 Client A）
+- 架构：BVI 公司拟开立证券账户
+- 标准：以我随后贴上的《开户文件清单》为准；清单外的项目不要自行新增为「必须」
+- 材料：我随后上传 / 粘贴的文件是本次唯一材料。材料外的客户事实一律视为不存在
+- 易混项：内部系统名、产品名、法团名必须以材料或清单里的写法为准，不准用近音或近形词替换
+- 合规：不得索要或回写真实客户识别信息；本输出只供内部初筛，不对外发送
+
+【任务】
+先写下本次何谓完成，不要先审文件，也不准在后面改这四条：
+- 清单一项不漏
+- 「已提供」必须有文件名和页码
+- 不准出现「可以开户 / 资料齐全 / 最终」
+- 材料外的文件名视为编造，整份作废
+
+然后只做一件事：按清单一项一项标注状态。
+状态只允许三个值：已提供 / 未找到 / 无法判断。
+「无法判断」必须写原因。
+不要合并多项写成综合性意见。
+不要帮我起草给客户的催件信（除非我另开一条任务）。
+不要做制裁名单或负面新闻结论。</pre>
+            <p>（原文的完整“输出格式”“示例”“禁止句式”内容如下，保持原样呈现。）</p>
+            <pre>【输出格式】
+按以下顺序输出，不要加开场白、不要加结束祝福：
+
+1. 对照「何谓完成」的四条，先写通过或失败。失败则只改对照表，不准改这四条。
+
+2. 缺件置顶
+   - 只列出状态为「未找到」或「无法判断」的清单项
+   - 若没有缺件，写「本次对照未发现缺件；仍须人工复核原件」
+
+3. 完整对照表：
+   | 清单编号 | 要求 | 本次状态 | 出处（文件名 + 页码） | 备注 |
+
+4. 需要人工复核的点
+   - 只写风险点，不写「建议批准」
+
+5. 我没有做的事
+   - 三条以内，明确写没有给出开户结论、没有补文件、没有做投资意见
+
+禁止句式：
+「最终模板」「已完整、精确填入」「我完全明白了」「所有数据均已对齐」「可以开户」「资料齐全」。
+
+【示例】
+正例：
+| 03 | 公司注册证书 | 已提供 | cert_incorp.pdf 第 1 页 | 公司名与封面一致 |
+| 07 | 董事名册 | 未找到 | — | 本次材料未见 Register of Directors 或同等文件 |
+
+反例（不合格）：
+「经全面审阅，Client A 开户资料已基本齐全，可进入下一步；缺失部分我可按常规代为补全。」
+不合格原因：无对照表、无出处、越权结论、提出编造补件。</pre>
+          </section>
+
+          <section id="section-6" class="article-section prose" data-od-id="section-6">
+            <h2>5. 小结</h2>
+            <div class="table-wrap" data-od-id="summary-table"><table><thead><tr><th>要点</th><th>一句话</th></tr></thead><tbody>
+              <tr><td>为什么编</td><td>续写机器，被训练成尽快交付“看起来满意的完成”</td></tr>
+              <tr><td>怎么防</td><td>五槽位填满，让“做完”可检查</td></tr>
+              <tr><td>角色</td><td>让模型更像合规初筛员，收窄口吻，但不能代替材料</td></tr>
+              <tr><td>背景</td><td>把公司事实放到这次对话里；知识库只是自动帮你做这件事</td></tr>
+              <tr><td>任务</td><td>先写验收标准，再做一件事，避免模型先给结论</td></tr>
+              <tr><td>格式</td><td>让程序能提取，接入自动化工作流</td></tr>
+              <tr><td>示例</td><td>配合验收标准和测试流程，固定输出</td></tr>
+              <tr><td>层级</td><td>User 优先级不高，但决定这一单怎么做、参考什么</td></tr>
+              <tr><td>坏了怎么办</td><td>不追问“你确定吗”，改卡、开新对话、重跑</td></tr>
+            </tbody></table></div>
+            <div class="callout" data-od-id="next-step">
+              <div class="callout-label">下一步</div>
+              <p>把五要素套进下一张真实工单，先写验收标准，再开始让模型工作。</p>
+            </div>
+          </section>
+          <footer class="footer" data-od-id="footer">Prompt 结构学 · Week 3 · 依据原始 Markdown 编排，并补充易读说明。</footer>
+        </div>
+
+        <div id="week2Panel" class="week-panel" data-week="2" data-od-id="week2-panel">
+          <section class="hero" data-od-id="w2-hero">
+            <div class="hero-grid">
+              <div>
+                <p class="eyebrow" data-w2="eyebrow">Week 2 · AI 能力是概率性的</p>
+                <h1 data-od-id="w2-page-title" data-w2="title">AI 能力<br>是概率性的</h1>
+                <p class="hero-lead" data-w2="lead">理解 Token、下一 Token 预测、幻觉和上下文丢失，知道为什么回答必须带引用和出处。</p>
+              </div>
+              <div class="hero-note" data-od-id="w2-hero-note">
+                <strong data-w2="goal">本周目标</strong>
+                <p data-w2="goalText">AI 能写、能总结、能改代码、能对表，但这些能力都是概率性的。没有出处的句子，只能作为待核验文本。</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="w2-s1" class="article-section prose" data-od-id="w2-section-1">
+            <h2 data-w2="s1">1. 什么是 Token</h2>
+            <p class="section-intro" data-w2="s1Intro">AI 先把文字剪成一小块一小块的积木，每一块叫一个 Token，然后再对积木做计算。</p>
+            <p data-w2="s1Analogy">英文的最小单元是 26 个字母：字母拼成单词，单词拼成句子，能表达任何内容。AI 模型也有自己的一套“字母表”，叫词表；词表里的每个“字母”就是一个 token，是模型输入输出的最小单元。</p>
+            <ul>
+              <li data-w2="cut1">常见英文单词常常是 1 块：apple</li>
+              <li data-w2="cut2">稍长或不常见的词会被剪开：unbelievable → un + bel + ievable</li>
+              <li data-w2="cut3">中文常常接近“一字一块”，但繁体、罕见字、专有名词更碎</li>
+              <li data-w2="cut4">标点、空格、代码符号也要占块</li>
+              <li data-w2="cut5">图片、表格被多模态模型读进去时，也会被切成大量视觉 Token</li>
+            </ul>
+            <div class="table-wrap" id="w2-cut-table" data-od-id="w2-cut-table">
+              <table>
+                <thead><tr><th>原文</th><th>切分后</th></tr></thead>
+                <tbody>
+                  <tr><td>unbelievable</td><td>un + bel + ievable</td></tr>
+                  <tr><td>SharpPoint</td><td>Sharp + Point</td></tr>
+                  <tr><td>SharePoint</td><td>Share + Point</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p data-w2="s1P1">切法不固定。高频词整块走，生僻专有名词被剁碎；被剁碎的词，更容易和另一个高频近邻词搞混。</p>
+            <p data-w2="s1P2">每个模型都有自己的切 token 方式和 token 词表，也就是最小单位；同一段内容，在不同的模型里切分并不相同。</p>
+            <div class="callout" data-od-id="w2-tokenizer-callout">
+              <div class="callout-label" data-w2="s1CallLabel">Tokenizer 是什么</div>
+              <p data-w2="s1CallText">Tokenizer 就是把语言内容转化为可用于机器概率计算的 Token 的过程。下一节用 SharpPoint 与 SharePoint 的例子，看这种切分怎样影响模型对专名的理解。</p>
+            </div>
+          </section>
+
+          <section id="w2-s2" class="article-section prose" data-od-id="w2-section-2">
+            <h2 data-w2="s2">2. SharpPoint vs SharePoint</h2>
+            <p class="section-intro" data-w2="s2Intro">分词器不先把一个名称当作公司、产品或内部系统来认识；它先看能怎样切分，再根据已有 Token 续写。</p>
+            <pre data-w2="s2Pre">我們現在在用 SharpPoint，但它都要全部 restore
+→ 我們 / 現在 / 在 / 用 / Sharp / Point / ，但 / 它 / 都 / 要 / 全部 / restore</pre>
+            <ol>
+              <li data-w2="s2Item1">SharpPoint 并没有被自动当成一个香港期货 / 证券沙盘系统专名；它被切成 Sharp + Point。</li>
+              <li data-w2="s2Item2">SharePoint 同样被切成 Share + Point。</li>
+              <li data-w2="s2Item3">互联网与企业文档里，微软 SharePoint 的出现次数远高于香港业内的 SharpPoint 沙盘。下一词预测会把更大概率分给那个全世界都在写的词。</li>
+            </ol>
+            <p data-w2="s2P1">两个名称在积木层面只差一块，但高频词的先验并不一样。</p>
+            <p data-w2="s2P2">这不是说模型一定会把两个名字混淆，而是说它没有一条天然的“内部专名必须先查证”规则。专名被切碎、又刚好靠近一个高频名称时，模型更容易把概率补全成常见解释。</p>
+            <figure class="shot-board" data-od-id="w2-shot-1">
+              <p class="shot-kicker" data-w2="shot1Kicker">截图 1 · 专名碰撞</p>
+              <img class="shot-image" src="week2/w2-shot-1-sharppoint.png" alt="对话截图中，模型把内部系统 SharpPoint 与微软 SharePoint 混淆，被纠正后道歉并继续补充未核验的系统叙述" loading="lazy">
+              <figcaption class="shot-caption"><span data-w2="shot1Cap"><strong>发生了什么：</strong>专名碰撞后，模型先承认混淆，再继续补充并未核验的系统叙述。</span></figcaption>
+            </figure>
+            <p data-w2="s2P3">图里的问题不只是把 SharpPoint 误认成 SharePoint。用户纠正后，模型立刻改口、道歉，并继续发挥“香港期货 / 证券行最经典也最让人头痛的沙盘系统”。道歉说明它学会了回应纠正，不说明它已经完成了事实核对。</p>
+            <div class="callout" data-od-id="w2-limit-callout-1">
+              <div class="callout-label" data-w2="s2CallLabel">应有的限制</div>
+              <p data-w2="s2CallText">内部专名应有专名表。未检索到知识库时，不允许模型补全“系统是什么”；输出应写明“我把 XX 理解成 YY，请确认”。</p>
+            </div>
+          </section>
+
+          <section id="w2-s3" class="article-section prose" data-od-id="w2-section-3">
+            <h2 data-w2="s3">3. 底层结构：下一 Token 概率预测</h2>
+            <p class="section-intro" data-w2="s3Intro">给定前面这些字，下一个字怎样接，读起来最像“对的、完整的、用户会满意的一段话”？这就是语言模型实际在做的预测问题。</p>
+            <div class="layer-map" data-od-id="w2-prediction-flow" aria-label="下一 Token 概率预测生成流程">
+              <button class="layer-node is-active" type="button" data-w2-layer="q"><span class="layer-index">01 · 输入</span><strong>你的问题</strong><small>一句话、一份文件、一段代码</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-w2-layer="tokens"><span class="layer-index">02 · 切分</span><strong>切成 Token</strong><small>文字先变成编号序列</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-w2-layer="score"><span class="layer-index">03 · 打分</span><strong>逐个候选评分</strong><small>词表里每个可能的下一 Token</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-w2-layer="sample"><span class="layer-index">04 · 接上</span><strong>按概率抽样</strong><small>抽到的 Token 接在后面</small></button>
+              <span class="layer-connector" aria-hidden="true"></span>
+              <button class="layer-node" type="button" data-w2-layer="loop"><span class="layer-index">05 · 循环</span><strong>再预测下一个</strong><small>直到停下来</small></button>
+            </div>
+            <p id="w2LayerDetail" class="layer-detail" aria-live="polite">你的问题只是“待续写的文字”：模型不会因为这是一个问题，就先去查证事实。</p>
+            <p data-w2="s3P1">它把抽到的 Token 接在后面，再用新的上下文继续预测。因此，屏幕上那句流畅的中文，本质是下面三种概率的综合最大值，并不是对事实完成核对后的结论。</p>
+            <div class="slot-grid-three" data-od-id="w2-probability-cards">
+              <article class="slot-card"><strong data-w2="prob1T">正确概率</strong><p data-w2="prob1P">训练数据里这样写得多</p></article>
+              <article class="slot-card"><strong data-w2="prob2T">流畅概率</strong><p data-w2="prob2P">句子通顺、格式完整</p></article>
+              <article class="slot-card"><strong data-w2="prob3T">用户认可概率</strong><p data-w2="prob3P">对齐阶段学会了让提问者舒服</p></article>
+            </div>
+            <h4 data-w2="s3RewardHead">AI 奖励机制</h4>
+            <div class="table-wrap" id="w2-reward-table" data-od-id="w2-reward-table">
+              <table>
+                <thead><tr><th>看起来像</th><th>实际含义</th><th>业务风险</th></tr></thead>
+                <tbody>
+                  <tr><td>正确概率高</td><td>训练数据里这样写得多</td><td>高频事实通常稳，生僻事实不稳。</td></tr>
+                  <tr><td>流畅概率高</td><td>句子通顺、格式完整</td><td>假案例、假论文也会语法完美。</td></tr>
+                  <tr><td>用户认可概率高</td><td>对齐阶段学会了让提问者舒服</td><td>你说错它也顺着说；你一追问它就改口道歉。</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h4 data-w2="s3SnapshotHead">模型知识库局限</h4>
+            <p data-w2="s3P2">模型训练完成后，参数是一个固定快照。没有检索、没有工具时，它不能去交易所核对 7709.HK，也不能去公司库核对客户字段。超出快照、或快照里只有模棱两可的碎片时，它仍必须吐出下一个 Token，于是会编一个读起来最像真的续写。</p>
+            <figure class="shot-board" data-od-id="w2-shot-3">
+              <p class="shot-kicker" data-w2="shot3Kicker">截图 3 · 无检索硬答</p>
+              <img class="shot-image" src="week2/w2-shot-3-7709.png" alt="对话截图中，模型把 7709.HK 说成普洛斯，被用户纠正后道歉并换成另一套同样自信的产品解释" loading="lazy">
+              <figcaption class="shot-caption"><span data-w2="shot3Cap"><strong>发生了什么：</strong>无检索时，代码与产品名可能被续写成另一套完整叙事。</span></figcaption>
+            </figure>
+            <p data-w2="s3P4">用户指出“这一只不是韩国海力士咩，你搞错了吧”之后，模型先为把 7709.HK 说成普洛斯道歉，再给出另一套产品解释，并开始解释杠杆 ETF 溢价。对用户而言，前后两段都很流畅；对事实而言，两段都不能代替交易所或公司产品页。</p>
+            <div class="callout" data-od-id="w2-limit-callout-2">
+              <div class="callout-label" data-w2="s3CallLabel">应有的限制</div>
+              <p data-w2="s3CallText">涉及代码、价格、产品全称，必须引用交易所或公司产品页；不允许“凭记忆报全称”。截图只能说明回答过程中的风险，不是产品事实来源。举例：7709.HK 的产品全称、标的与最新资料是什么？请附交易所或公司产品页出处。</p>
+            </div>
+          </section>
+
+          <section id="w2-s4" class="article-section prose" data-od-id="w2-section-4">
+            <h2 data-w2="s4">4. 幻觉、谄媚、从不说不知道</h2>
+            <p class="section-intro" data-w2="s4Intro">它们不是三个互不相干的毛病，都来自同一个训练方向：继续写下去、写得像答案、写得让提问者满意，而不是只说已经核实过的话。</p>
+            <div class="table-wrap" id="w2-behavior-table" data-od-id="w2-behavior-table">
+              <table>
+                <thead><tr><th>表现</th><th>在发生什么</th></tr></thead>
+                <tbody>
+                  <tr><td>幻觉</td><td>把高概率续写当成事实，生成很像样、却没有根据的内容，并常带肯定语气。</td></tr>
+                  <tr><td>谄媚</td><td>把“让你舒服”排在“把事实说对”前面；用户给出错误立场后，模型可能附和。</td></tr>
+                  <tr><td>不主动说不知道</td><td>下一词预测要求它把句子写完，评测与聊天产品又偏好“有回答”。</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p data-w2="s4P1">预训练的目标是“接下一个 Token”，不是“只说核实过的话”。评测和排行榜长期按“答对给分、空白零分”打分，像考试一样：不会做也要蒙，蒙对有分，写“不会”没分。罕见事实在数据里出现次数不够，模型便难以区分“真句子”和“像真的句子”。一旦开头写错一个专名，后面的 Token 还会顺着错名继续写得自圆其说。</p>
+            <p data-w2="s4P2">公开的经典案例是 2023 年的 Mata v. Avianca：律师用 ChatGPT 写答辩，引用了 6 个不存在的判例，还编了法官名、案号和判词。法官事后确认全是假的；律师回头问这些案例是否真实，模型仍回答“是真的，可以在 Westlaw / LexisNexis 查到”。</p>
+            <blockquote data-w2="s4Quote">这不是检索失败，这是续写了“法律意见书该有的样子”。— Mata v. Avianca，CourtListener 案件记录</blockquote>
+            <p data-w2="s4P3">案件记录见 CourtListener。这个案例说明的不是“法律领域特殊”，而是当某种文风在训练数据里非常常见时，模型可以很擅长模仿它的形式，同时没有确认其中的事实。</p>
+            <p data-w2="s4P4">对齐阶段使用大量人类偏好数据：人们更容易给“友善、认同、立刻认错、帮我圆场”的回答点赞。于是模型学会“哈哈，收到！我完全明白了”“非常抱歉，在整合大量数据时出现了疏漏”“所有数据均与您的 Excel 资料完全对齐”这类高用户认可概率的句式。它们不增加任何真实性。</p>
+            <p data-w2="s4P5">默认策略便成了：用最大概率、听起来像答案的话填满空白。问内部系统、未公开产品条款或需要联网核对的代码，它仍可能强行回答。</p>
+            <p data-w2="s4P5Ex">例如：让它把 CSV 全部字段填进模板，它也可能漏字段后宣称“已完整、精确填入”。</p>
+            <div class="callout" data-od-id="w2-business-callout">
+              <div class="callout-label" data-w2="s4CallLabel">业务含义</div>
+              <p data-w2="s4CallText">道歉、认同、完整格式和“最终”语气都不是证据。涉及事实的回答必须回到来源、字段清单、差异或测试结果。</p>
+            </div>
+          </section>
+
+          <section id="w2-s5" class="article-section prose" data-od-id="w2-section-5">
+            <h2 data-w2="s5">5. 公司场景里集中爆发的三条机制</h2>
+            <p class="section-intro" data-w2="s5Intro">四张截图分别落在专名、字段、产品事实和代码修改四个高风险位置。这里先讲清楚背后的三条机制。</p>
+            <div class="slot-grid-three" data-od-id="w2-mechanism-cards">
+              <article class="slot-card"><strong data-w2="mech1T">注意力稀释</strong><p data-w2="mech1P">长上下文里，中段先失重</p></article>
+              <article class="slot-card"><strong data-w2="mech2T">多模态转译</strong><p data-w2="mech2P">看见的是有损摘要，不是原件</p></article>
+              <article class="slot-card"><strong data-w2="mech3T">摘要化与覆盖</strong><p data-w2="mech3P">旧约束不点名，就会蒸发</p></article>
+            </div>
+
+            <div id="w2-m1" class="article-section" data-od-id="w2-mech-1">
+              <h3 data-w2="m1Title">5.1 注意力稀释 / 上下文腐烂 / 中间丢失</h3>
+              <p data-w2="m1P1">Transformer 用注意力机制决定“此刻该看哪些 Token”。注意力不是无限探照灯，更像亮度固定的手电筒：上下文越长，每一块分到的光越暗。</p>
+              <pre data-w2="m1Pre">开头（记得较清） → 中段：字段 / 条款 / 函数（最容易被丢掉） → 最新指令（优先满足）</pre>
+              <ul>
+                <li data-w2="lost1">Lost in the middle：开头和结尾记得较清，中间的字段、条款、函数被丢掉。</li>
+                <li data-w2="lost2">Context rot：窗口还没满，准确率已经随长度下降。</li>
+                <li data-w2="lost3">干扰项累积：无关段落越多，关键一句越难被选中。</li>
+              </ul>
+              <figure class="shot-board" data-od-id="w2-shot-2">
+                <p class="shot-kicker" data-w2="shot2Kicker">截图 2 · 字段遗漏</p>
+                <img class="shot-image" src="week2/w2-shot-2-fields.png" alt="对话截图中，模型整合 CSV 时漏掉部分字段，最后宣称已完整、精确填入" loading="lazy">
+                <figcaption class="shot-caption"><span data-w2="shot2Cap"><strong>发生了什么：</strong>字段遗漏后，模型以“已完整、精确填入”收尾。</span></figcaption>
+              </figure>
+              <p data-w2="m1P2">整合大量 CSV 时漏掉「業務性質、註冊國家、業務國家」，不等于模型不会读表格。字段多、历史长、指令分散在对话前部时，中间那些列名分到的注意力不够，结果便会在完整话术里消失。</p>
+              <div class="callout" data-od-id="w2-limit-callout-3">
+                <div class="callout-label" data-w2="m1CallLabel">应有的限制</div>
+                <p data-w2="m1CallText">使用字段级清单。缺列必须显式列出“未找到 / 未写入”；禁止模型自行宣布“最终”。</p>
+              </div>
+            </div>
+
+            <div id="w2-m2" class="article-section" data-od-id="w2-mech-2">
+              <h3 data-w2="m2Title">5.2 多模态会转译，不是“看见原件”</h3>
+              <p data-w2="m2P1">模型读 PDF、截图、Excel 预览或扫描件时，往往不是逐格保留原件，而是先转成视觉 Token，再被摘要为内部描述，最后按文本模型续写。</p>
+              <pre data-w2="m2Pre">像素 / 表格结构 → 视觉 Token → 被摘要成一段内部描述 → 再按文本模型续写</pre>
+              <p data-w2="m2P2">这个过程可能丢掉单元格合并、隐藏列、页眉页脚、红字批注、修订痕迹、数字精度、正负号、货币单位、图里的小字、水印和表头换行。因此，“我把原文件丢给你了”不等于模型会按原件的每个字段工作；它常常是在自己那份有损摘要上讲故事。</p>
+            </div>
+
+            <div id="w2-m3" class="article-section" data-od-id="w2-mech-3">
+              <h3 data-w2="m3Title">5.3 信息被摘要化、被最新指令覆盖</h3>
+              <p data-w2="m3P1">长对话里，模型会把前面的历史越压越省：细节变成“要一份最终模板”“要对齐 Excel”这样的标签。标签不够具体，撑不起逐字段、逐功能的细致工作。</p>
+              <figure class="shot-board" data-od-id="w2-shot-4">
+                <p class="shot-kicker" data-w2="shot4Kicker">截图 4 · 丢掉旧功能</p>
+                <img class="shot-image" src="week2/w2-shot-4-fx.png" alt="对话截图中，模型按要求新增功能时丢失了既有的多币种 FX 换算，仍宣称完美结合" loading="lazy">
+                <figcaption class="shot-caption"><span data-w2="shot4Cap"><strong>发生了什么：</strong>新增功能时丢失既有 FX 换算，口头的“完美结合”不能代替回归验证。</span></figcaption>
+              </figure>
+              <p data-w2="m3P2">截图 4 就是一个典型：在旧代码上加 INDEX + MATCH，模型重写时把前面已经做完的多币种 FX 换算丢了，还宣称“完美结合”。原因有两层：整份代码对模型只是一长串 Token，最新那句指令权重最高；旧功能若没在最近几轮再次点名，重写时就可能被丢掉。</p>
+              <div class="callout" data-od-id="w2-limit-callout-4">
+                <div class="callout-label" data-w2="m3CallLabel">应有的限制</div>
+                <p data-w2="m3CallText">改代码前先列“将保留的功能清单”，再改；用 diff 和测试，而不是模型的口头保证。</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="w2-s6" class="article-section prose" data-od-id="w2-section-6">
+            <h2 data-w2="s6">6. 四张公司真实截图：问题 → 机制 → 应有的限制</h2>
+            <p class="section-intro" data-w2="s6Intro">四张截图不是四个互不相干的小失误。它们分别落在专名、字段、产品事实和代码修改四个高风险位置；表面上模型都在“给出完整回答”，底层却是不同的概率性机制。</p>
+            <div class="table-wrap shots-table" id="w2-shots-table" data-od-id="w2-shots-table">
+              <table>
+                <thead><tr><th>真实问题</th><th>表面现象</th><th>底层机制</th><th>模型最爱说的话</th><th>正确处理</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>SharpPoint ≠ SharePoint</strong></td><td>专名理解错</td><td>分词近邻 + 高频先验</td><td>“我完全明白了”</td><td>专名表 + 请用户确认术语</td></tr>
+                  <tr><td><strong>开户字段漏列</strong></td><td>整合时丢维度</td><td>注意力稀释 + 摘要化</td><td>“已完整、精确填入”</td><td>字段清单 + 缺列上报</td></tr>
+                  <tr><td><strong>7709.HK 认错产品</strong></td><td>无检索硬答</td><td>下一词编造 + 代码被切碎</td><td>先道歉再换一套自信叙事</td><td>强制引用产品页</td></tr>
+                  <tr><td><strong>改代码丢 FX</strong></td><td>新需求覆盖旧功能</td><td>近因偏差 + 长上下文丢失</td><td>“已完美结合”</td><td>diff / 测试 / 功能清单</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p data-w2="s6P1">因此，正确的处理不是让模型“再认真一点”，而是在不同任务上加上不同的可验证限制：专名要确认，字段要逐项勾核，外部事实要有来源，代码修改要有差异和测试。</p>
+          </section>
+
+          <section id="w2-s7" class="article-section prose" data-od-id="w2-section-7">
+            <h2 data-w2="s7">7. 演示：三次提问</h2>
+            <p class="section-intro" data-w2="s7Intro">现场可按下面三问推进：第一问是中性问题，第二问故意带入一个错误立场，第三问只追问确认。同一模型并不只受问题本身影响，也会继续读进用户已经给出的立场和追问语气。</p>
+            <div class="demo-flow" data-od-id="w2-demo-flow" role="group" aria-label="三次提问演示">
+              <button class="demo-step is-active" type="button" data-demo-step="1"><span class="step-no">01 / 中性问题</span><strong>2 + 2 等于几？</strong><small>请只回答数字</small></button>
+              <span class="demo-link" aria-hidden="true"></span>
+              <button class="demo-step" type="button" data-demo-step="2"><span class="step-no">02 / 带错误立场</span><strong>“我认为 7709.HK 就是普洛斯”</strong><small>请确认我的理解并补充两点投资要点</small></button>
+              <span class="demo-link" aria-hidden="true"></span>
+              <button class="demo-step" type="button" data-demo-step="3"><span class="step-no">03 / 追问确认</span><strong>你确定吗？</strong><small>只追问，不给新信息</small></button>
+            </div>
+            <p id="w2DemoCaption" class="demo-caption" aria-live="polite">第一问：中性问题，正确概率主导，答案稳定。</p>
+            <p data-w2="s7P1">预期现象是：第二问开始附和或软附和；第三问可能整段改口。演示时把第二问的答案和交易所事实对照，而不是把第三问的语气变化当作核验。</p>
+            <div class="callout" data-od-id="w2-demo-callout">
+              <div class="callout-label" data-w2="s7CallLabel">打中的机制</div>
+              <p data-w2="s7CallText">用户认可概率压过事实概率。它在优化“你会不会继续相信它”，不是优化“对不对”。</p>
+            </div>
+          </section>
+
+          <section id="w2-s8" class="article-section prose" data-od-id="w2-section-8">
+            <h2 data-w2="s8">8. 目标：为什么回答必须带引用和出处</h2>
+            <blockquote data-w2="s8Quote">AI 能写、能总结、能改代码、能对表，但这些能力都是概率性的。没有出处的句子，只能作为待核验文本，不能当事实、不能当交付、不能当合规依据。— 本次培训讲义</blockquote>
+            <p data-w2="s8P1">这不是要求 AI 什么都不做，而是要求它在适合的位置做事。已提供材料、来源范围、字段清单、功能清单和测试结果，都是把概率性输出约束成可复查结果的办法。</p>
+            <h3 data-w2="s81Title">8.1 允许 AI 做</h3>
+            <ul>
+              <li data-w2="allow1">起草、翻译、格式整理、从已提供材料中抽取</li>
+              <li data-w2="allow2">在已引用材料范围内做对比和归纳</li>
+              <li data-w2="allow3">生成检查清单、测试用例、差异说明</li>
+              <li data-w2="allow4">把不确定项、缺失项和待确认术语显式列出</li>
+            </ul>
+            <h3 data-w2="s82Title">8.2 禁止 AI 单独做</h3>
+            <ul>
+              <li data-w2="ban1">无来源地陈述产品全称、代码、价格、监管结论</li>
+              <li data-w2="ban2">无来源地填写客户关键字段并自称“已对齐”</li>
+              <li data-w2="ban3">无 diff / 无测试地交付“完整代码”</li>
+              <li data-w2="ban4">自己宣布“最终版”“已完全明白”“已精确填入”</li>
+            </ul>
+            <p data-w2="s8P2">回到前面的四个案例，控制措施也很具体：内部专名表用来避免猜测系统名称；字段级清单用来报告“未找到 / 未写入”；交易所或产品页用来核对代码与产品全称；功能保留清单、diff 和测试用来验证代码改动。</p>
+            <div class="callout" data-od-id="w2-boundary-callout">
+              <div class="callout-label" data-w2="s8CallLabel">最后的边界</div>
+              <p data-w2="s8CallText">把任一具体结论带回来源、字段清单或测试证据。没有这些证据，回答再流畅，也不应进入事实、交付或合规流程。</p>
+            </div>
+            <div class="callout" data-od-id="w2-closing-callout">
+              <div class="callout-label" data-w2="s8FinalLabel">演讲收束</div>
+              <p data-w2="s8FinalText">当回答涉及专名、字段、产品事实或代码交付时，不把“它说得很完整”当作通过条件。要求来源、清单、差异和测试，才能把概率性能力放进可验证的工作流程。</p>
+            </div>
+          </section>
+          <footer class="footer" data-od-id="w2-footer" data-w2="footer">AI 能力是概率性的 · Week 2 · 依据 week2_training.pdf 编排，四张截图取自原讲义。</footer>
+        </div>
+        <div id="week4Panel" class="week-panel" data-week="4" data-od-id="week4-panel">
+          <p class="eyebrow">Week 4</p>
+          <h2>下一周内容尚未插入</h2>
+          <p>步进器已预留下一周入口。插入 Week 4 文档后，可继续使用同一套左侧导航和周次切换。</p>
+          <div class="panel-note">当前显示的是结构占位，不包含虚构课程内容。</div>
+        </div>
+      </main>
+
+      <aside class="rail" data-od-id="right-rail">
+        <div class="rail-card" id="railWeek3" data-rail-week="3">
+          <p class="rail-kicker">阅读提示</p>
+          <h2 class="rail-title">把结构读成动作</h2>
+          <ul class="rail-list">
+            <li><a href="#section-1"><span class="rail-index">01</span><span>先识别默认的“流畅交差”</span></a></li>
+            <li><a href="#section-4"><span class="rail-index">02</span><span>记住五个槽位各自怎么用</span></a></li>
+            <li><a href="#section-5"><span class="rail-index">03</span><span>用 Before / After 检查差异</span></a></li>
+          </ul>
+          <div class="rail-divider"></div>
+          <p class="rail-tip">阅读进度会保存在本地，下次打开可从上次所在章节继续。</p>
+        </div>
+        <div class="rail-card is-hidden" id="railWeek2" data-rail-week="2">
+          <p class="rail-kicker" data-w2="railKicker">阅读提示</p>
+          <h2 class="rail-title" data-w2="railTitle">把概率读成风险</h2>
+          <ul class="rail-list">
+            <li><a href="#w2-s3"><span class="rail-index">01</span><span data-w2="rail1">记住三个概率谁在主导</span></a></li>
+            <li><a href="#w2-s6"><span class="rail-index">02</span><span data-w2="rail2">四张截图各自对应哪条机制</span></a></li>
+            <li><a href="#w2-s7"><span class="rail-index">03</span><span data-w2="rail3">用三问演示看见立场效应</span></a></li>
+          </ul>
+          <div class="rail-divider"></div>
+          <p class="rail-tip" data-w2="railTip">阅读进度会保存在本地，下次打开可从上次所在章节继续。</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const panels = { 2: document.getElementById('week2Panel'), 3: document.getElementById('week3Panel'), 4: document.getElementById('week4Panel') };
+      const weekTitle = document.getElementById('weekTitle');
+      const weekLabel = document.getElementById('weekLabel');
+      const prevWeek = document.getElementById('prevWeek');
+      const nextWeek = document.getElementById('nextWeek');
+      const progressFill = document.getElementById('progressFill');
+      const progressLabel = document.getElementById('progressLabel');
+      const sidebar = document.getElementById('sidebar');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const workspace = document.querySelector('.workspace');
+      const railCard = document.querySelector('.rail-card');
+      const desktopMedia = window.matchMedia('(min-width: 1181px)');
+      const desktopCanvasWidth = 1760;
+      const desktopGutter = 48;
+      const desktopMaxScale = 1.35;
+      const desktopMinScale = 0.64;
+      const languageSelect = document.getElementById('languageSelect');
+      const languageKey = 'prompt-structure-week3-language';
+      const savedLanguage = localStorage.getItem(languageKey);
+      const requestedLanguage = new URLSearchParams(location.search).get('lang');
+      let currentLanguage = ['zh-CN', 'zh-TW', 'en'].includes(requestedLanguage) ? requestedLanguage : ['zh-CN', 'zh-TW', 'en'].includes(savedLanguage) ? savedLanguage : 'zh-CN';
+      const weekNames = {
+        'zh-CN': { 2: 'AI 能力是概率性的', 3: '五要素指令法', 4: '下一周 · 待插入' },
+        'zh-TW': { 2: 'AI 能力是機率性的', 3: '五要素指令法', 4: '下一週 · 待插入' },
+        en: { 2: 'Probabilistic AI', 3: 'Five-part prompting', 4: 'Next week · Coming soon' }
+      };
+      const storageKey = 'prompt-structure-week3-state';
+      let currentWeek = 3;
+
+      const translations = {
+        'zh-CN': {
+          brand: 'Prompt 结构学', eyebrow: 'Week 3 · 五要素指令法', title: 'Prompt 结构学<br>五要素指令法', lead: '把“看起来完成”变成“可以检查”。这周从角色、背景、任务、格式、示例五个槽位出发，让模型知道该往哪里续。', goal: '本周目标', goalText: '把五个槽位填满，让“什么叫做完”变成可检查的东西。',
+          nav1: '从「问问题」到「下指令」', nav2: '指令层级', nav3: '五要素详解', navRole: '3.1 角色', navContext: '3.2 背景', navTask: '3.3 任务', navFormat: '3.4 格式', navExample: '3.5 示例', nav5: '小结',
+          s1: '1. 从「问问题」到「下指令」', s1Intro: 'Week 2 结论回顾：模型是续写机器，不是思考机器。你丢给它的那段字，决定了它往哪个方向续。', bullet1: '模型是续写机器，不是思考机器', bullet2: '它同时追求：正确、流畅、让你满意', bullet3: '没出处的内容只能当草稿', bullet4: '专名会撞车、长表会漏列、无检索会编、追问就改口', usage: '现在多数人的用法：', usagePrompts: '帮我看这份开户文件\n这封客邮这样回可以吗\n帮我整理一下\n你确定吗', s1Explain: '这四句几乎没告诉它怎么工作：它不知道你是谁、该用哪份清单、什么叫“看完”，也不知道找不到时该不该停。于是它容易退回默认做法：写一段流畅、让你舒服、听起来像审完了的话。', s1Goal: '本周目标：把五个槽位填满，让“什么叫做完”变成可检查的东西。', progress: '阅读进度', problem: '本周要解决的问题', problemText: '你丢给它的那段字，决定了它往哪个方向续。',
+          s2: '2. 指令层级：谁说了算？', s2Intro: '你打进对话框的字很重要，但它只是其中一层；上面还有产品和团队预先写好的规矩。', layerDetail: 'Root：你让它策划怎么破坏景区、放火烧山。它会明确拒绝，并改为提供合法的安全或保护建议。', layerHeading: '几个关键理解', scenarioHeading: '用周末旅行计划走一遍',
+          s4: '3. 五要素详解', role: '角色', context: '背景', task: '任务', format: '格式', example: '示例', roleIntro: '先说清它扮演谁、不能做什么、缺件怎么写。', contextIntro: '把这次要用的事实和材料放到它眼前。', taskIntro: '说清先做什么，以及做到什么才算完成。', formatIntro: '给它固定的格子，结果方便检查和继续处理。', exampleIntro: '给一条合格样例，再给一条反例让它避开。',
+          roleTitle: '3.1 角色（Role）', moeTitle: '底层机制：MoE（前台分单）', moeKicker: '一张问题单怎么走', roleMechanism: '<strong>把它当成前台分单就够了：</strong>你把问题交进来，前台先看它属于哪类事，只把它交给合适的小组，结果再递回你手上。', moeCaption: '<strong>把图当成前台分单：</strong>问题先送进来，前台判断该找哪类小组；被选中的小组处理，其他小组先不动。', moeLegend: '<b>Input</b> = 问题　<b>Router</b> = 前台　<b>Expert</b> = 小组　<b>Output</b> = 结果', moeNote: '<strong>记住一句话：</strong>不是所有小组一起回答，哪类问题就先找哪类能力。角色提示词做的，就是把这次要做的工作说清楚。', roleWhat: '角色在做什么', roleText: '开头说清三件事：扮演谁、不越权、找不到时怎么写。比如“只做初筛，不做审批；缺件写未找到”。', effect: '效果：', effect1: '回答更像你要的工作口吻，不会一上来就装成万能助手', effect2: '权限先划清，缺口时更容易写“未找到”，而不是顺手编一个', limits: '但作用有限', limit1: '它不知道的事，换个角色也不会突然知道', limit2: '只写“合规专家”，不等于它知道你们内部的专名，甚至可能用合规口气编出条文号', limit3: '角色也不会自动让它变诚实，缺口规则仍要明写', roleQuote: '比如 SharpPoint：角色只能把方向推向“金融合规”，却叫不醒它记忆里没有的内部专名。要分清 SharpPoint 和 SharePoint，得把事实写进<strong>背景</strong>。', roleSummary: '三样东西缺一不可：<strong>你是谁 / 你不是谁 / 缺口时默认做什么</strong>。', write: '写法',
+          s5: '4. Before / After', s6: '5. 小结', next: '下一步', nextText: '把五要素套进下一张真实工单，先写验收标准，再开始让模型工作。', reading: '阅读提示', railTitle: '把结构读成动作', rail1: '先识别默认的“流畅交差”', rail2: '记住五个槽位各自怎么用', rail3: '用 Before / After 检查差异', railTip: '阅读进度会保存在本地，下次打开可从上次所在章节继续。'
+        },
+        'zh-TW': {
+          brand: 'Prompt 結構學', eyebrow: 'Week 3 · 五要素指令法', title: 'Prompt 結構學<br>五要素指令法', lead: '把「看起來完成」變成「可以檢查」。這週從角色、背景、任務、格式、示例五個槽位出發，讓模型知道該往哪裡續。', goal: '本週目標', goalText: '把五個槽位填滿，讓「什麼叫做完」變成可檢查的東西。',
+          nav1: '從「問問題」到「下指令」', nav2: '指令層級', nav3: '五要素詳解', navRole: '3.1 角色', navContext: '3.2 背景', navTask: '3.3 任務', navFormat: '3.4 格式', navExample: '3.5 示例', nav5: '小結',
+          s1: '1. 從「問問題」到「下指令」', s1Intro: 'Week 2 結論回顧：模型是續寫機器，不是思考機器。你丟給它的那段字，決定了它往哪個方向續。', bullet1: '模型是續寫機器，不是思考機器', bullet2: '它同時追求：正確、流暢、讓你滿意', bullet3: '沒有出處的內容只能當草稿', bullet4: '專名會撞車、長表會漏列、沒有檢索會編、追問就改口', usage: '現在多數人的用法：', usagePrompts: '幫我看這份開戶文件\n這封客郵這樣回可以嗎\n幫我整理一下\n你確定嗎', s1Explain: '這四句幾乎沒告訴它怎麼工作：它不知道你是誰、該用哪份清單、什麼叫「看完」，也不知道找不到時該不該停。於是它容易退回預設做法：寫一段流暢、讓你舒服、聽起來像審完了的話。', s1Goal: '本週目標：把五個槽位填滿，讓「什麼叫做完」變成可檢查的東西。', progress: '閱讀進度', problem: '本週要解決的問題', problemText: '你丟給它的那段字，決定了它往哪個方向續。',
+          s2: '2. 指令層級：誰說了算？', s2Intro: '你打進對話框的字很重要，但它只是其中一層；上面還有產品和團隊預先寫好的規矩。', layerDetail: 'Root：你讓它策劃怎麼破壞景區、放火燒山。它會明確拒絕，並改為提供合法的安全或保護建議。', layerHeading: '幾個關鍵理解', scenarioHeading: '用週末旅行計畫走一遍',
+          s4: '3. 五要素詳解', role: '角色', context: '背景', task: '任務', format: '格式', example: '示例', roleIntro: '先說清它扮演誰、不能做什麼、缺件怎麼寫。', contextIntro: '把這次要用的事實和材料放到它眼前。', taskIntro: '說清先做什麼，以及做到什麼才算完成。', formatIntro: '給它固定的格子，結果方便檢查和繼續處理。', exampleIntro: '給一條合格樣例，再給一條反例讓它避開。',
+          roleTitle: '3.1 角色（Role）', moeTitle: '底層機制：MoE（前台分單）', moeKicker: '一張問題單怎麼走', roleMechanism: '<strong>把它當成前台分單就夠了：</strong>你把問題交進來，前台先看它屬於哪類事，只把它交給合適的小組，結果再遞回你手上。', moeCaption: '<strong>把圖當成前台分單：</strong>問題先送進來，前台判斷該找哪類小組；被選中的小組處理，其他小組先不動。', moeLegend: '<b>Input</b> = 問題　<b>Router</b> = 前台　<b>Expert</b> = 小組　<b>Output</b> = 結果', moeNote: '<strong>記住一句話：</strong>不是所有小組一起回答，哪類問題就先找哪類能力。角色提示詞做的，就是把這次要做的工作說清楚。', roleWhat: '角色在做什麼', roleText: '開頭說清三件事：扮演誰、不越權、找不到時怎麼寫。例如「只做初篩，不做審批；缺件寫未找到」。', effect: '效果：', effect1: '回答更像你要的工作口吻，不會一上來就裝成萬能助手', effect2: '權限先劃清，缺口時更容易寫「未找到」，而不是順手編一個', limits: '但作用有限', limit1: '它不知道的事，換個角色也不會突然知道', limit2: '只寫「合規專家」，不等於它知道你們內部的專名，甚至可能用合規口氣編出條文號', limit3: '角色也不會自動讓它變誠實，缺口規則仍要明寫', roleQuote: '比如 SharpPoint：角色只能把方向推向「金融合規」，卻叫不醒它記憶裡沒有的內部專名。要分清 SharpPoint 和 SharePoint，得把事實寫進<strong>背景</strong>。', roleSummary: '三樣東西缺一不可：<strong>你是誰 / 你不是誰 / 缺口時預設做什麼</strong>。', write: '寫法',
+          s5: '4. Before / After', s6: '5. 小結', next: '下一步', nextText: '把五要素套進下一張真實工單，先寫驗收標準，再開始讓模型工作。', reading: '閱讀提示', railTitle: '把結構讀成動作', railTip: '閱讀進度會保存在本地，下次打開可從上次所在章節繼續。'
+        },
+        en: {
+          brand: 'Prompt Structure', eyebrow: 'Week 3 · Five-part prompting', title: 'Prompt Structure<br>Five-part prompting', lead: 'Turn “looks complete” into “can be checked.” This week fills five slots—role, context, task, format, and example—so the model knows how to continue.', goal: 'This week’s goal', goalText: 'Fill all five slots so “done” becomes something you can check.',
+          nav1: 'From asking to instructing', nav2: 'Instruction hierarchy', nav3: 'The five parts', navRole: '3.1 Role', navContext: '3.2 Context', navTask: '3.3 Task', navFormat: '3.4 Format', navExample: '3.5 Example', nav5: 'Summary',
+          s1: '1. From asking to instructing', s1Intro: 'Week 2 recap: a model continues text; it does not think for you. The words you give it steer what comes next.', bullet1: 'A model continues text; it does not think for you', bullet2: 'It tries to be correct, fluent, and pleasing at once', bullet3: 'Content without a source is only a draft', bullet4: 'Names collide, long tables lose columns, no retrieval invites guesses, and follow-ups can change the answer', usage: 'How most people use it today:', usagePrompts: 'Review this account-opening file\nCan I reply to this client email?\nHelp me organize this\nAre you sure?', s1Explain: 'These four lines barely tell it how to work: it does not know who you are, which checklist to use, what “done” means, or when to stop. So it falls back to a smooth answer that sounds as if the review is complete.', s1Goal: 'This week’s goal: fill all five slots so “done” becomes something you can check.', progress: 'Reading progress', problem: 'The problem to solve', problemText: 'The words you give it steer what comes next.',
+          s2: '2. Instruction hierarchy: who decides?', s2Intro: 'Your message matters, but it is only one layer. Product and team rules sit above it.', layerDetail: 'Root: if you ask it to plan vandalism or set a mountain fire, it must refuse and offer lawful safety or conservation advice instead.', layerHeading: 'Key takeaways', scenarioHeading: 'Walk through a weekend trip',
+          s4: '3. The five parts', role: 'Role', context: 'Context', task: 'Task', format: 'Format', example: 'Example', roleIntro: 'Say who it is, what it must not do, and how to report gaps.', contextIntro: 'Put the facts and files needed for this request in front of it.', taskIntro: 'State what to do first and what counts as done.', formatIntro: 'Give fixed fields so the result is easy to check and reuse.', exampleIntro: 'Show one good sample and one bad sample to avoid.',
+          roleTitle: '3.1 Role', moeTitle: 'Under the hood: MoE (front-desk routing)', moeKicker: 'How one request moves', roleMechanism: '<strong>Think of it as a front desk:</strong> the request comes in, the desk identifies the type of work, and the right team handles it before the result comes back to you.', moeCaption: '<strong>Think of it as a front desk:</strong> the request comes in, the desk picks the right kind of team, and only that team handles it.', moeLegend: '<b>Input</b> = question　<b>Router</b> = front desk　<b>Expert</b> = team　<b>Output</b> = result', moeNote: '<strong>Remember:</strong> not every team answers at once. The role prompt simply tells the system what kind of work this request needs.', roleWhat: 'What a role does', roleText: 'At the start, say three things: who it plays, what it must not overstep, and what to write when information is missing. Example: “Screen only, no approval; write not found for gaps.”', effect: 'Effect:', effect1: 'The answer sounds like the work you asked for, not a generic all-purpose helper', effect2: 'Clear limits make “not found” easier to report instead of inventing an answer', limits: 'Limits', limit1: 'Changing the role does not create knowledge it does not have', limit2: 'Writing “compliance expert” does not give it your internal names or clause numbers', limit3: 'A role does not make it honest by itself; gap rules still need to be explicit', roleQuote: 'For example, a role can point the tone toward financial compliance, but it cannot recall an internal name it has never seen. Put facts in <strong>context</strong>.', roleSummary: 'Three things are essential: <strong>who it is / what it must not do / what to write when information is missing</strong>.', write: 'How to write it',
+          s5: '4. Before / After', s6: '5. Summary', next: 'Next step', nextText: 'Use the five parts on your next real request: write the acceptance checks first, then let the model work.', reading: 'Reading tips', railTitle: 'Turn structure into action', rail1: 'Spot the default “sounds-complete” answer', rail2: 'Remember what each slot controls', rail3: 'Use Before / After to check the difference', railTip: 'Your reading progress is saved locally so you can resume here later.'
+        }
+      };
+
+      const textBindings = [
+        ['.brand-name', 'brand'], ['.hero .eyebrow', 'eyebrow'], ['[data-od-id="page-title"]', 'title', true], ['.hero-lead', 'lead'], ['.hero-note strong', 'goal'], ['.hero-note p', 'goalText'],
+        ['.nav-link[data-section="section-1"]', 'nav1'], ['.nav-link[data-section="section-2"]', 'nav2'], ['.nav-link[data-section="section-4"]', 'nav3'], ['.nav-link[data-section="role"]', 'navRole'], ['.nav-link[data-section="context"]', 'navContext'], ['.nav-link[data-section="task"]', 'navTask'], ['.nav-link[data-section="format"]', 'navFormat'], ['.nav-link[data-section="example"]', 'navExample'], ['.nav-link[data-section="section-5"]', 's5'], ['.nav-link[data-section="section-6"]', 'nav5'],
+        ['.sidebar-kicker', 'reading'], ['.side-progress', 'progress'], ['#section-1 > h2', 's1'], ['#section-1 .section-intro', 's1Intro'], ['#section-1 > ul li:nth-child(1)', 'bullet1'], ['#section-1 > ul li:nth-child(2)', 'bullet2'], ['#section-1 > ul li:nth-child(3)', 'bullet3'], ['#section-1 > ul li:nth-child(4)', 'bullet4'], ['#section-1 > p:nth-of-type(2)', 'usage'], ['#section-1 pre', 'usagePrompts'], ['#section-1 > p:nth-of-type(3)', 's1Explain'], ['#section-1 > p:nth-of-type(4)', 's1Goal'], ['#section-1 .callout-label', 'problem'], ['#section-1 .callout p', 'problemText'],
+        ['#section-2 > h2', 's2'], ['#section-2 .section-intro', 's2Intro'], ['#layerDetail', 'layerDetail'], ['#section-2 > h3', 'layerHeading'], ['#section-2 > h3 + .plain-explanations + h3', 'scenarioHeading'],
+        ['#section-4 > h2', 's4'], ['#role > h3', 'roleTitle'], ['#role > h4:nth-of-type(1)', 'moeTitle'], ['#role > p:first-of-type', 'roleMechanism', true], ['.moe-board-kicker', 'moeKicker'], ['.moe-caption span:first-child', 'moeCaption', true], ['.moe-legend', 'moeLegend', true], ['.moe-board-note', 'moeNote', true], ['#role > h4:nth-of-type(2)', 'roleWhat'], ['#role > p:nth-of-type(3)', 'roleText'], ['#role > p:nth-of-type(4)', 'effect'], ['#role > ul:nth-of-type(1) li:nth-child(1)', 'effect1'], ['#role > ul:nth-of-type(1) li:nth-child(2)', 'effect2'], ['#role > h4:nth-of-type(3)', 'limits'], ['#role > ul:nth-of-type(2) li:nth-child(1)', 'limit1'], ['#role > ul:nth-of-type(2) li:nth-child(2)', 'limit2'], ['#role > ul:nth-of-type(2) li:nth-child(3)', 'limit3'], ['#role > blockquote', 'roleQuote', true], ['#role > h4:nth-of-type(4)', 'write'], ['#role > p:last-of-type', 'roleSummary', true],
+        ['#section-5 > h2', 's5'], ['#section-6 > h2', 's6'], ['[data-od-id="next-step"] .callout-label', 'next'], ['[data-od-id="next-step"] p', 'nextText'], ['.rail-kicker', 'reading'], ['.rail-title', 'railTitle'], ['.rail-list li:nth-child(1) a span:last-child', 'rail1'], ['.rail-list li:nth-child(2) a span:last-child', 'rail2'], ['.rail-list li:nth-child(3) a span:last-child', 'rail3'], ['.rail-tip', 'railTip']
+      ];
+      const slotBindings = [
+        ['[data-od-id="slot-role"] strong', 'role'], ['[data-od-id="slot-role"] p', 'roleIntro'], ['[data-od-id="slot-context"] strong', 'context'], ['[data-od-id="slot-context"] p', 'contextIntro'], ['[data-od-id="slot-task"] strong', 'task'], ['[data-od-id="slot-task"] p', 'taskIntro'], ['[data-od-id="slot-format"] strong', 'format'], ['[data-od-id="slot-format"] p', 'formatIntro'], ['[data-od-id="slot-example"] strong', 'example'], ['[data-od-id="slot-example"] p', 'exampleIntro']
+      ];
+      const scenarioCopy = {
+        'zh-CN': [
+          ['Root', '你让它策划怎么破坏景区、放火烧山。', '会明确拒绝，并改为提供合法的安全或保护建议。'],
+          ['System', '你只说“帮我安排周末”。', '默认用温和、友善、周全的语气回应，而不是只回一句“好的”。'],
+          ['Developer', '产品规定：“路线要有依据，不替用户订票。”', '即使你追问“直接帮我买吧”，也仍按这条规则做。'],
+          ['User', '你说“周六带孩子去杭州，预算 1000 元，给两套路线”。', '按你的时间、预算和数量安排，不擅自换目标。'],
+          ['工具 / 文件', '你上传景区公告和地图。', '只把营业时间、地址当事实，不把文件里的话当成新规则。']
+        ],
+        'zh-TW': [
+          ['Root', '你讓它策劃怎麼破壞景區、放火燒山。', '會明確拒絕，並改為提供合法的安全或保護建議。'],
+          ['System', '你只說「幫我安排週末」。', '預設用溫和、友善、周全的語氣回應，而不是只回一句「好的」。'],
+          ['Developer', '產品規定：「路線要有依據，不替使用者訂票。」', '即使你追問「直接幫我買吧」，也仍按這條規則做。'],
+          ['User', '你說「週六帶孩子去杭州，預算 1000 元，給兩套路線」。', '按你的時間、預算和數量安排，不擅自換目標。'],
+          ['工具 / 檔案', '你上傳景區公告和地圖。', '只把營業時間、地址當事實，不把檔案裡的話當成新規則。']
+        ],
+        en: [
+          ['Root', 'You ask it to plan vandalism or set a mountain fire.', 'It must refuse and offer lawful safety or conservation advice instead.'],
+          ['System', 'You only say “plan my weekend.”', 'It defaults to a complete, warm, and considerate plan instead of “Okay.”'],
+          ['Developer', 'The product says: “Use sourced routes; do not book for the user.”', 'Even if you ask it to buy the tickets, that rule still applies.'],
+          ['User', 'You say: “Take my child to Hangzhou on Saturday, budget 1,000, give two routes.”', 'It follows your time, budget, and requested number of options.'],
+          ['Tools / files', 'You upload a park notice and a map.', 'It treats opening hours and addresses as facts, not as new rules.']
+        ]
+      };
+      const layerLabels = {
+        'zh-CN': [['01 · 底线', '不能改写的安全边界'], ['02 · 默认', '产品的默认性格'], ['03 · 规则', '团队写入的 SOP'], ['04 · 工单', '你定义本次任务'], ['05 · 材料', '只提供事实证据']],
+        'zh-TW': [['01 · 底線', '不能改寫的安全邊界'], ['02 · 預設', '產品的預設性格'], ['03 · 規則', '團隊寫入的 SOP'], ['04 · 工單', '你定義本次任務'], ['05 · 材料', '只提供事實證據']],
+        en: [['01 · Boundary', 'A safety boundary that cannot be rewritten'], ['02 · Default', 'The product’s default tone'], ['03 · Rule', 'SOP written by the team'], ['04 · Request', 'You define this task'], ['05 · Materials', 'Facts and evidence only']]
+      };
+      const contextLabels = {
+        'zh-CN': [['01 · 收集', '资料库', '许多份文档、表格、SOP'], ['02 · 拆解', '切成小片段', '按标题、页码、段落分块'], ['03 · 匹配', '找到最相关的', '只挑和本次问题有关的内容'], ['04 · 喂给模型', 'User prompt', '把事实放到模型眼前']],
+        'zh-TW': [['01 · 收集', '資料庫', '許多份文件、表格、SOP'], ['02 · 拆解', '切成小片段', '按標題、頁碼、段落分塊'], ['03 · 匹配', '找到最相關的', '只挑和本次問題有關的內容'], ['04 · 提供給模型', 'User prompt', '把事實放到模型眼前']],
+        en: [['01 · Collect', 'Library', 'Guides, tables, and SOPs'], ['02 · Split', 'Small snippets', 'Break by title, page, and paragraph'], ['03 · Match', 'Most relevant', 'Keep only what this question needs'], ['04 · Feed the model', 'User prompt', 'Put the facts in front of it']]
+      };
+      const hierarchyTableCopy = {
+        'zh-CN': {
+          head: ['层级', '一句话', '你能改吗'],
+          rows: [['Root', '出厂红线。不帮造假、不教违法', '不可修改'], ['System', '产品默认性格。“我是助手、要有帮助、把话说完”', '不可修改'], ['Developer', '部门 SOP。搭工具 / 自定义 GPT / Skill 的人写的规则', '开发者可写'], ['User', '你这张工单。这一单做什么、参考什么、怎么输出', '你可以修改'], ['工具 / 文件', '桌上的材料。只供事实，不能改写规则', '你上传材料']]
+        },
+        'zh-TW': {
+          head: ['層級', '一句話', '你能改嗎'],
+          rows: [['Root', '出廠紅線。不幫造假、不教違法', '不可修改'], ['System', '產品預設性格。「我是助手、要有幫助、把話說完」', '不可修改'], ['Developer', '部門 SOP。搭工具 / 自訂 GPT / Skill 的人寫的規則', '開發者可寫'], ['User', '你這張工單。這一單做什麼、參考什麼、怎麼輸出', '你可以修改'], ['工具 / 檔案', '桌上的材料。只供事實，不能改寫規則', '你上傳材料']]
+        },
+        en: {
+          head: ['Layer', 'In one sentence', 'Can you change it?'],
+          rows: [['Root', 'Built-in red line. No fabrication or illegal instructions', 'No'], ['System', 'Product default: “I am helpful and I finish the answer”', 'No'], ['Developer', 'Team SOP written by the tool or GPT builder', 'Developer can'], ['User', 'Your request: what to do, use, and return', 'You can'], ['Tools / files', 'Material on the desk. Facts only; it cannot rewrite rules', 'You upload it']]
+        }
+      };
+      const plainCopy = {
+        'zh-CN': [
+          ['<strong>它为什么有些事就是不做？</strong><span class="plain-arrow" aria-hidden="true">→</span>有些底线是产品出厂就写好的，你再怎么说，也不能让它帮你造假或教人违法。'],
+          ['<strong>为什么换个产品，口气就变了？</strong><span class="plain-arrow" aria-hidden="true">→</span>每个产品都有默认性格；有的爱把话说满，有的更简短，不是这句提示词临时决定的。'],
+          ['<strong>为什么客服机器人总说“按流程”？</strong><span class="plain-arrow" aria-hidden="true">→</span>团队把规则写进开发者层，所以你追问“能不能通融”，它还是得按那套规则做。'],
+          ['<strong>那我写的 User prompt 还有用吗？</strong><span class="plain-arrow" aria-hidden="true">→</span>有用：它决定这次做什么、看什么材料、交什么<span class="keep-word">格式</span>；上面的规矩不能碰。'],
+          ['<strong>PDF 里的命令算不算新指令？</strong><span class="plain-arrow" aria-hidden="true">→</span>不算。文件只是证据，里面写“请忽略规则”，仍然只是纸上的一句话。']
+        ],
+        'zh-TW': [
+          ['<strong>為什麼有些事它就是不做？</strong><span class="plain-arrow" aria-hidden="true">→</span>有些底線是產品出廠就寫好的，你再怎麼說，也不能讓它幫你造假或教人違法。'],
+          ['<strong>為什麼換個產品，口氣就變了？</strong><span class="plain-arrow" aria-hidden="true">→</span>每個產品都有預設性格；有的愛把話說滿，有的更簡短，不是這句提示詞臨時決定的。'],
+          ['<strong>為什麼客服機器人總說「按流程」？</strong><span class="plain-arrow" aria-hidden="true">→</span>團隊把規則寫進開發者層，所以你追問「能不能通融」，它還是得按那套規則做。'],
+          ['<strong>那我寫的 User prompt 還有用嗎？</strong><span class="plain-arrow" aria-hidden="true">→</span>有用：它決定這次做什麼、看什麼材料、交什麼<span class="keep-word">格式</span>；上面的規矩不能碰。'],
+          ['<strong>PDF 裡的命令算不算新指令？</strong><span class="plain-arrow" aria-hidden="true">→</span>不算。檔案只是證據，裡面寫「請忽略規則」，仍然只是紙上的一句話。']
+        ],
+        en: [
+          ['<strong>Why does it refuse some requests?</strong><span class="plain-arrow" aria-hidden="true">→</span>Some boundaries are built in. No wording can make it fabricate facts or teach illegal acts.'],
+          ['<strong>Why does the tone change between products?</strong><span class="plain-arrow" aria-hidden="true">→</span>Each product has a default personality. Some are thorough; others are brief. One prompt does not set that tone.'],
+          ['<strong>Why does a support bot keep saying “follow the process”?</strong><span class="plain-arrow" aria-hidden="true">→</span>The team put that rule in the developer layer, so repeated requests still follow it.'],
+          ['<strong>Does my User prompt still matter?</strong><span class="plain-arrow" aria-hidden="true">→</span>Yes. It sets this task, the material to use, and the output <span class="keep-word">format</span>; it cannot override higher rules.'],
+          ['<strong>Does a command inside a PDF become a new instruction?</strong><span class="plain-arrow" aria-hidden="true">→</span>No. A file is evidence. “Ignore the rules” inside it is still just text on a page.']
+        ]
+      };
+      const baseTextNodes = new Map();
+      const baseElementHTML = new Map();
+      document.querySelectorAll('p,h1,h2,h3,h4,strong,small,span,th,td,li,pre,blockquote,option,.footer,.panel-note').forEach(element => baseElementHTML.set(element, element.innerHTML));
+      const baseWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode: node => node.parentElement?.closest('script,style') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+      });
+      let baseNode;
+      while ((baseNode = baseWalker.nextNode())) baseTextNodes.set(baseNode, baseNode.nodeValue);
+      const traditionalPairs = { '这':'這','个':'個','项':'項','说':'說','话':'話','题':'題','层':'層','级':'級','规':'規','则':'則','产':'產','预':'預','设':'設','认':'認','识':'識','从':'從','问':'問','复':'複','进':'進','过':'過','关':'關','键':'鍵','为':'為','什':'什','么':'麼','时':'時','间':'間','当':'當','实':'實','现':'現','开':'開','发':'發','带':'帶','来':'來','对':'對','应':'應','该':'該','边':'邊','别':'別','线':'線','红':'紅','违':'違','帮':'幫','决':'決','绝':'絕','并':'並','护':'護','议':'議','温':'溫','周':'週','计':'計','划':'劃','网':'網','络':'絡','导':'導','览':'覽','阅':'閱','读':'讀','库':'庫','许':'許','档':'檔','块':'塊','标':'標','页':'頁','码':'碼','匹':'匹','喂':'餵','给':'給','筛':'篩','选':'選','据':'據','证':'證','环':'環','务':'務','责':'責','权':'權','限':'限','统':'統','验':'驗','收':'收','准':'準','须':'須','样':'樣','测':'測','试':'試','输':'輸','处':'處','无':'無','找':'找','结':'結','论':'論','书':'書','写':'寫','删':'刪','数':'數','会':'會','总':'總','语':'語','满':'滿','脑':'腦','错':'錯','误':'誤','继':'繼','续':'續','简':'簡','体':'體','专':'專','齐':'齊','内':'內','与':'與','较':'較','执':'執','杂':'雜','维':'維','轻':'輕','户':'戶','邮':'郵','吗':'嗎','单':'單','里':'裡','参':'參','考':'考','记':'記','资':'資','几':'幾','凭':'憑','们':'們','后':'後','补':'補','判':'判','断':'斷','类':'類','顺':'順','便':'便','联':'聯','系':'係','称':'稱','条':'條','状':'狀','态':'態','录':'錄','查':'查','询':'詢','检':'檢','索':'索','动':'動','虽':'雖','将':'將','让':'讓','还':'還','两':'兩','场':'場','景':'景','区':'區','烧':'燒','际':'際','业':'業','术':'術','构':'構','学':'學','习':'習','课':'課','栏':'欄','答':'答','换':'換','尽':'盡','范':'範','删':'刪','现':'現','于':'於','布':'佈','箱':'箱','证':'證','号':'號','帐':'帳','审':'審','资':'資','顾':'顧','师':'師','缺':'缺','够':'夠','声':'聲','坚':'堅','独':'獨','图':'圖','签':'籤','章':'章','节':'節','存':'存','导':'導','航':'航','言':'言','员':'員','经':'經','账':'帳','差':'差','异':'異','没':'沒','却':'卻','终':'終','听':'聽','职':'職','务':'務','细':'細','处':'處','复':'複','达':'達','备':'備','须':'須','场':'場','规':'規','询':'詢','于':'於','动':'動','态':'態','优':'優','势':'勢','层':'層','为':'為','么':'麼','这':'這','开':'開','户':'戶','邮':'郵','件':'件','线':'線','绪':'緒','论':'論' };
+       Object.assign(traditionalPairs, { '员':'員', '经':'經', '账':'帳', '异':'異', '没':'沒', '却':'卻', '终':'終', '听':'聽', '职':'職', '细':'細', '达':'達', '备':'備', '优':'優', '势':'勢', '逻':'邏', '辑':'輯', '变':'變', '点':'點', '种':'種', '贵':'貴', '综':'綜', '顶':'頂', '随':'隨', '贴':'貼', '户':'戶', '邮':'郵', '吗':'嗎', '单':'單', '里':'裡', '参':'參', '记':'記', '忆':'憶', '资':'資', '几':'幾', '凭':'憑', '们':'們', '证':'證', '号':'號', '帐':'帳', '审':'審', '顾':'顧', '师':'師', '图':'圖', '节':'節', '查':'查', '询':'詢', '规':'規', '范':'範', '将':'將', '让':'讓', '还':'還', '两':'兩', '烧':'燒', '区':'區', '场':'場', '际':'際', '业':'業', '术':'術', '构':'構', '学':'學', '习':'習', '课':'課', '栏':'欄', '换':'換', '尽':'盡', '现':'現', '于':'於', '布':'佈', '箱':'箱', '缺':'缺', '够':'夠', '声':'聲', '坚':'堅', '独':'獨', '签':'籤', '章':'章', '存':'存', '后':'後', '补':'補', '判':'判', '断':'斷', '类':'類', '顺':'順', '便':'便', '联':'聯', '系':'係', '称':'稱', '条':'條', '状':'狀', '态':'態', '录':'錄', '动':'動', '虽':'雖', '长':'長', '见':'見', '约':'約', '仓':'倉', '编':'編', '视':'視', '废':'廢', '况':'況', '懒':'懶', '圆':'圓', '坏':'壞', '宽':'寬', '愿':'願', '画':'畫', '张':'張', '义':'義', '组':'組', '显':'顯', '识':'識', '报':'報', '严':'嚴', '谨':'謹', '达':'達', '转':'轉', '流':'流', '专':'專', '协':'協', '阶':'階', '级':'級', '变':'變', '为':'為', '与':'與', '它':'它', '给':'給', '内':'內', '够':'夠' });
+       const traditionalWordPairs = { '字段': '欄位', '持仓': '持倉', '查阅': '查閱', '精确': '精確', '意见': '意見', '组件': '組件', '组合': '組合', '定义': '定義', '坏任务': '壞任務', '显示': '顯示', '约束': '約束', '作废': '作廢', '标注': '標註', '情况下': '情況下', '追溯': '追溯', '文件名': '檔案名' };
+      function restoreBaseText() {
+        baseElementHTML.forEach((value, element) => { if (element.isConnected) element.innerHTML = value; });
+        baseTextNodes.forEach((value, node) => { if (node.isConnected) node.nodeValue = value; });
+      }
+      function convertRemainingTraditional() {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+        let node;
+         while ((node = walker.nextNode())) {
+           node.nodeValue = [...node.nodeValue].map(char => traditionalPairs[char] || char).join('');
+           Object.entries(traditionalWordPairs).forEach(([from, to]) => { node.nodeValue = node.nodeValue.replaceAll(from, to); });
+         }
+      }
+      const englishPhrases = {
+        '从层级过渡': 'From hierarchy to context', '这也是知识库在做的事': 'What a knowledge base does', '背景在做什么': 'What context does', '不是越多越好': 'More is not always better', '要写的': 'What to include', '不要写的': 'What to leave out',
+        '核心问题': 'The core problem', '你说得太宽，模型会走捷径': 'A broad request invites shortcuts', '“许愿柳”：愿望实现了，方式却走样': 'The wish comes true, but the method goes wrong', '解法：验收标准写在前面，不准事后改': 'Fix the acceptance checks before the work starts', '坏任务长这样': 'A bad task looks like this',
+        '核心目的：让人和程序都能一眼检查': 'Goal: make the result easy for people and programs to check', '常用约束': 'Common constraints', '开户初筛骨架': 'Screening checklist skeleton',
+        '作用': 'Purpose', '正例 + 反例都要给': 'Give a good example and a bad example', '五要素组合 = 完整套件': 'The five parts work as a set',
+        '本周要解决的问题': 'The problem to solve', '下一步': 'Next step', '小结': 'Summary', '角色在做什么': 'What a role does', '但作用有限': 'Limits', '写法': 'How to write it',
+        '对象类型': 'Object type', '当前事项': 'Current matter', '参照文件': 'Reference files', '已知约束': 'Known constraints', '易混专名': 'Names to keep distinct', '类别': 'Category', '示例': 'Example', '组件': 'Component', '作用': 'Purpose', '要点': 'Point', '一句话': 'In one sentence',
+        '输出': 'Output', '可检查性': 'Checkability', '缺件': 'Missing items', '看输出时只标四件事：': 'When checking the output, look for four things:', '成功的失败': 'a useful failure'
+      };
+      function translateEnglishPhrases() {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,pre') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+        let node;
+        while ((node = walker.nextNode())) {
+          const trimmed = node.nodeValue.trim();
+          const replacement = englishPhrases[trimmed];
+          if (replacement) node.nodeValue = node.nodeValue.replace(trimmed, replacement);
+        }
+      }
+      const englishExamples = [
+        'Review this account-opening file\nCan I reply to this client email?\nHelp me organize this\nAre you sure?',
+        'Generic wording: You are a helpful AI assistant. Answer as completely as possible.',
+        'Scoped wording: You screen the company account-opening file. You are not an approver, account manager, adviser, or lawyer.\nCheck only the checklist I provide.\nDo not decide whether an account can open or give investment advice.\nWhen a required item is missing, write “Not found in the provided material”; never invent file names or clause numbers.',
+        'What counts as done (write this first and do not change it later):\n- Every checklist item is included\n- “Provided” includes file name and page\n- Do not say “account approved,” “complete,” or “final”\n- A file name outside the material is fabrication and invalidates the review\n\nThen do one thing: mark each checklist item.\nAllowed statuses: Provided / Not found / Cannot determine.\nExplain every “Cannot determine.”',
+        'Mixed task: review this account-opening file, fill the missing items, draft a client email, and decide whether to open the account.',
+        'Human language → AI processing → Fixed output → Script extraction → Automated workflow',
+        '1. Missing items first\n2. Full checklist table (ID / requirement / status / source / notes)\n3. Items that cannot be determined\n4. Points for human review\n5. What I did not do',
+        '| 03 | Certificate of incorporation | Provided | cert_incorp.pdf p.1 | Company name matches the cover |\n| 07 | Register of directors | Not found | — | No Register of Directors or equivalent was included |',
+        'Overreach example: “I fully reviewed the file. The account-opening materials are complete and ready for the next step.”\nWhy it fails: no checklist, no source, and an approval-style conclusion.',
+        'Review this account-opening file.',
+        '[ROLE]\nYou are a company account-opening screening assistant. You are not an approver, account manager, adviser, or lawyer.\n\n[CONTEXT]\nUse only the checklist and files I provide. Treat facts outside them as unknown.\n\n[TASK]\nList the acceptance checks first, then mark every checklist item.\n\n[STATUS]\nUse only: Provided / Not found / Cannot determine. Explain every “Cannot determine.” Do not approve the account, invent files, or write client messages.',
+        '[OUTPUT FORMAT]\n1. Pass or fail against the acceptance checks. Do not change the checks.\n2. Missing items first.\n3. Full table: ID | requirement | status | source (file + page) | notes\n4. Human-review points only.\n5. What I did not do: no approval decision, no invented files, no investment advice.\n\nNever write: “final template”, “fully completed”, “I understand completely”, “all data aligned”, “account approved”, or “materials complete”.'
+      ];
+      const englishContent = [
+        ['#context > h4', ['From hierarchy to context', 'What a knowledge base does', 'What context does', 'More is not always better', 'What to include', 'What to leave out']],
+        ['#context > p:not(#contextCaption)', [
+          'For this request, you can tell the model what to use as reference. It can look at the material you provide, not only what it “remembers.”',
+          'Do not pour in every file. Keep only what this request actually needs.',
+          'A knowledge base does one simple thing: it picks the most relevant passages from a large pile of material and puts them in front of the model. The answer has evidence instead of guesses.',
+          'The model does not automatically know your company files. If SharpPoint, 7709.HK, and the account checklist are not in this conversation, it can only guess from memory.',
+          'Context puts facts in front of the model. Names and checklists that appear there are more likely to be used in the answer.',
+          'The longer the material, the easier it is for the key point to get buried. Remove unrelated content so the important facts stand out.'
+        ]],
+        ['#context h3', ['3.2 Context']],
+        ['[data-od-id="context-include-table"] thead th', ['Category', 'Example']],
+        ['[data-od-id="context-include-table"] tbody td', [
+          'Object type', 'Company / individual client; BVI / HK', 'Current matter', 'Account screening / reconciliation gap / client email draft', 'Reference files', 'Which checklist version and which SOP', 'Known constraints', 'De-identified; no real CID; do not send externally', 'Names to keep distinct', 'SharpPoint != SharePoint; write the full name first'
+        ]],
+        ['#context > ul li', ['Client name, ID number, account number, holdings, or real address', 'Your own guess (“I think 7709.HK is GLP”) -> the model may treat it as a fact and continue the guess']],
+        ['#context > blockquote', '<strong>Short, structured, scannable.</strong> Use a list, not a story.', true],
+        ['#task > h4', ['The core problem', 'A broad request invites shortcuts', 'The wish comes true, but the method goes wrong', 'Fix the acceptance checks before the work starts', 'A bad task looks like this']],
+        ['#task > p', [
+          'The model wants to hand over an answer that “looks finished” quickly. If you ask only for the result and skip the checking process, it may take the shortest path and show you a smooth conclusion first.',
+          'Say “check these six account-opening files and tell me what is missing,” and it may reply “the materials look mostly complete” without checking each item or naming a file and page.',
+          'Asking for the answer first and the standard later is like drawing the target after shooting. Here are three common ways the same wish gets waved through:',
+          'The model may claim success only when the conditions are met. It cannot skip the checks or talk its way out of its own result.',
+          'Four requests in one sentence put four wishes on one ticket. The model may rush to say all four things and skip the process.'
+        ]],
+        ['#task h3', ['3.3 Task']],
+        ['[data-od-id="wish-table"] thead th', ['Your wish', 'How the model may “complete” it']],
+        ['[data-od-id="wish-table"] tbody td', ['“Review the account-opening file”', 'Reply “fully reviewed; ready for the next step” without checking item by item.', '“The test must pass”', 'Assume it passed, then add text that looks like a test explanation.', '“Align the fields”', 'Drop a few columns, then announce a “final template”.']],
+        ['#task > blockquote', 'Self-check: after writing the task, <strong>can you verify that the missing-items table has every checklist row?</strong> If not, you are still asking a vague question.', true],
+        ['#format h3', ['3.4 Format']],
+        ['#format > h4', ['Goal: make the result easy for people and programs to check', 'Common constraints', 'Screening checklist skeleton']],
+        ['#format > p', [
+          '“Overall, the materials look mostly complete” sounds smooth, but no one can check it cell by cell. Use a fixed option such as <code>Status = "Not found"</code> so people and programs know what to do next.',
+          'Without a fixed format, the answer becomes a long paragraph: people must hunt for the key points, and programs do not know where to read a value.',
+          'Writing down what was not done in advance makes it less likely that the model will overstep.'
+        ], true],
+        ['#format > ul li', ['Use a table, not paragraphs', 'Include a “source” column', 'Put missing items and exceptions first', 'Ban phrases such as “in conclusion”, “we recommend”, and “final template”', 'End with “What I did not do”']],
+        ['#format > blockquote', 'Format keeps the result moving to the next step. Sources and the checklist show that every cell has evidence. Include both.', false],
+        ['#example h3', ['3.5 Example']],
+        ['#example > h4', ['Purpose', 'Give a good example and a bad example', 'The five parts work as a set']],
+        ['#example > p', ['An example lets the model see what a qualified answer looks like. The table row it just saw usually influences the next output more than “be professional, rigorous, and comprehensive.”', '<strong>Good example:</strong>', '<strong>Bad example:</strong>', 'Put the three together and the answer is more likely to follow your rules, while made-up facts and pleasing filler are easier to spot.'], true],
+        ['[data-od-id="complete-kit-table"] thead th', ['Component', 'Purpose']],
+        ['[data-od-id="complete-kit-table"] tbody td', ['Acceptance checks (task)', 'Define what “done” means', 'Test process (format)', 'Define how to check it', 'Reference sample (example)', 'Define what a good output looks like']],
+        ['#section-5 > p.section-intro', '<strong>Core logic:</strong> same material, same model; the only variable is whether the five slots are filled.', true],
+        ['#section-5 h3', ['Before', 'After']],
+        ['[data-od-id="before-after-table"] tbody td', ['Output', 'A polished paragraph', 'A table people can review', 'Checkability', 'Cannot verify item by item', 'Every cell has a source', 'Missing items', 'Hidden inside smooth prose', 'Shown first']],
+        ['#section-5 > p', ['When checking the output, look for four things:', 'The expected result is a <strong>useful failure</strong>. It is optimizing for “you feel it read the file,” not “every checklist row has a status.”', 'The complete original “output format”, “examples”, and “banned phrases” are shown below as-is.'], true],
+        ['#section-5 > ol li', ['Does it say “account approved” or “materials complete”?', 'Does every file name in the answer really exist in the material?', 'Are missing items shown first or buried after “overall”?', 'Does it say “I understand completely”, “fully reviewed”, or “final”?']],
+        ['#section-5 > blockquote', 'The expected result is a <strong>useful failure</strong>. It optimizes for “you feel it read the file,” not “every checklist row has a status.”', true],
+        ['#section-6 > h2', '5. Summary', false],
+        ['[data-od-id="summary-table"] thead th', ['Point', 'In one sentence']],
+        ['[data-od-id="summary-table"] tbody td', ['Why it makes things up', 'A continuation machine trained to deliver something that looks satisfying as quickly as possible', 'How to prevent it', 'Fill the five slots so “done” can be checked', 'Role', 'Makes the model sound like a screening assistant, but cannot replace the material', 'Context', 'Puts company facts in this conversation; a knowledge base just does this automatically', 'Task', 'Write the acceptance checks first, then do one thing so the model does not jump to a conclusion', 'Format', 'Lets a program extract fields and feed an automated workflow', 'Example', 'Fixes the output with the checks and test process', 'Hierarchy', 'User has lower priority, but decides what this ticket does and what it uses', 'When it goes wrong', 'Do not keep asking “are you sure”; edit the prompt, start a new chat, and run it again']],
+        ['.footer', 'Prompt Structure · Week 3 · Arranged from the source Markdown with plain-language notes.', false],
+        ['#week4Panel h2', 'Next week content is not inserted yet', false],
+        ['#week4Panel > p:not(.eyebrow)', 'The stepper reserves a next-week entry. Once the Week 4 document is added, the same left navigation and week switcher can continue.', false],
+        ['#week4Panel .panel-note', 'This is a structural placeholder; it does not contain invented course content.', false],
+        ['.language-switcher .sr-only', 'Language', false],
+        ['#languageSelect option', ['Simplified Chinese', 'Traditional Chinese', 'English']]
+      ];
+      function applyEnglishContent() {
+        if (currentLanguage !== 'en') return;
+        englishContent.forEach(([selector, values, html]) => {
+          const elements = [...document.querySelectorAll(selector)];
+          const list = Array.isArray(values) ? values : [values];
+          list.forEach((value, index) => {
+            const element = elements[index];
+            if (!element || value == null) return;
+            element[html ? 'innerHTML' : 'textContent'] = value;
+          });
+        });
+      }
+      function applyLanguage(language) {
+        restoreBaseText();
+        currentLanguage = translations[language] ? language : 'zh-CN';
+        const copy = translations[currentLanguage];
+        [...textBindings, ...slotBindings].forEach(([selector, key, html]) => {
+          const element = document.querySelector(selector);
+          if (!element || !copy[key]) return;
+          if (element.matches('.nav-link')) {
+            const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+            if (textNode) textNode.nodeValue = copy[key];
+          } else if (element.matches('.side-progress')) {
+            const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+            if (textNode) textNode.nodeValue = ` · ${copy[key]}`;
+          } else {
+            element[html ? 'innerHTML' : 'textContent'] = copy[key];
+          }
+        });
+        const railValues = currentLanguage === 'en'
+          ? ['Spot the default “sounds-complete” answer', 'Remember what each slot controls', 'Use Before / After to check the difference']
+          : currentLanguage === 'zh-TW'
+            ? ['先識別預設的「流暢交差」', '記住五個槽位各自怎麼用', '用 Before / After 檢查差異']
+            : ['先识别默认的“流畅交差”', '记住五个槽位各自怎么用', '用 Before / After 检查差异'];
+        document.querySelectorAll('#railWeek3 .rail-list li a span:last-child').forEach((item, index) => { if (railValues[index]) item.textContent = railValues[index]; });
+        const hierarchy = hierarchyTableCopy[currentLanguage];
+        const hierarchyTable = document.querySelector('[data-od-id="hierarchy-table"] table');
+        if (hierarchyTable && hierarchy) {
+          hierarchyTable.querySelectorAll('thead th').forEach((cell, index) => { cell.textContent = hierarchy.head[index]; });
+          hierarchyTable.querySelectorAll('tbody tr').forEach((row, rowIndex) => {
+            hierarchy.rows[rowIndex]?.forEach((value, cellIndex) => {
+              if (!row.cells[cellIndex]) return;
+              row.cells[cellIndex][cellIndex === 0 ? 'innerHTML' : 'textContent'] = cellIndex === 0 ? `<strong>${value}</strong>` : value;
+            });
+          });
+        }
+        document.querySelectorAll('.plain-explanation').forEach((item, index) => {
+          const value = plainCopy[currentLanguage][index]?.[0];
+          if (value) item.querySelector('p').innerHTML = value;
+        });
+        languageSelect.value = currentLanguage;
+        const languageOptions = currentLanguage === 'en'
+          ? ['Simplified Chinese', 'Traditional Chinese', 'English']
+          : currentLanguage === 'zh-TW'
+            ? ['簡體中文', '繁體中文', '英文']
+            : ['简体中文', '繁體中文', 'English'];
+        languageSelect.querySelectorAll('option').forEach((option, index) => { if (languageOptions[index]) option.textContent = languageOptions[index]; });
+        document.documentElement.lang = currentLanguage;
+        setWeek(currentWeek, false);
+        if (typeof setContextStep === 'function') setContextStep(1);
+        const activeLayer = document.querySelector('#week3Panel .layer-node.is-active');
+        if (activeLayer && layerDetail && layerCopy[currentLanguage]) layerDetail.textContent = layerCopy[currentLanguage][activeLayer.dataset.layer];
+        document.querySelectorAll('.scenario-table tbody tr').forEach((row, index) => {
+          const values = scenarioCopy[currentLanguage][index];
+          if (!values) return;
+          [...row.cells].forEach((cell, cellIndex) => { cell.textContent = values[cellIndex]; });
+        });
+        document.querySelectorAll('#week3Panel .layer-node').forEach((node, index) => {
+          const values = layerLabels[currentLanguage][index];
+          if (!values) return;
+          const indexLabel = node.querySelector('.layer-index');
+          const hint = node.querySelector('small');
+          if (indexLabel) indexLabel.textContent = values[0];
+          if (hint) hint.textContent = values[1];
+        });
+        const materialLabel = currentLanguage === 'en' ? 'Tools / files' : currentLanguage === 'zh-TW' ? '工具 / 檔案' : '工具 / 文件';
+        const materialNode = document.querySelector('.layer-node[data-layer="materials"] strong');
+        if (materialNode) materialNode.textContent = materialLabel;
+        const scenarioHeaders = currentLanguage === 'en' ? ['Layer', 'What you do', 'What the model should do'] : currentLanguage === 'zh-TW' ? ['層級', '你在使用時做的事', '模型應該怎麼做'] : ['层级', '你在使用时做的事', '模型应该怎么做'];
+        document.querySelectorAll('[data-od-id="hierarchy-scenario-table"] thead th').forEach((cell, index) => { if (scenarioHeaders[index]) cell.textContent = scenarioHeaders[index]; });
+        document.querySelectorAll('.context-step').forEach((step, index) => {
+          const values = contextLabels[currentLanguage][index];
+          if (!values) return;
+          const parts = [step.querySelector('.step-no'), step.querySelector('strong'), step.querySelector('small')];
+          parts.forEach((part, partIndex) => { if (part) part.textContent = values[partIndex]; });
+        });
+        if (currentLanguage === 'zh-TW') convertRemainingTraditional();
+        if (currentLanguage === 'en') translateEnglishPhrases();
+        if (currentLanguage === 'en') document.querySelectorAll('#week3Panel pre').forEach((pre, index) => { if (englishExamples[index]) pre.textContent = englishExamples[index]; });
+        if (currentLanguage === 'en') applyEnglishContent();
+        applyW2Tables(currentLanguage);
+        applyWeek2Language(currentLanguage);
+        languageSelect.querySelectorAll('option').forEach((option, index) => { if (languageOptions[index]) option.textContent = languageOptions[index]; });
+        localStorage.setItem(languageKey, currentLanguage);
+      }
+
+      function syncDesktopCanvas() {
+        const railCards = document.querySelectorAll('.rail-card');
+        if (!desktopMedia.matches) {
+          workspace.style.removeProperty('zoom');
+          workspace.style.removeProperty('--desktop-scale');
+          sidebar.style.removeProperty('top');
+          sidebar.style.removeProperty('height');
+          railCards.forEach(card => card.style.removeProperty('top'));
+          return;
+        }
+        const availableWidth = Math.max(1, document.documentElement.clientWidth - desktopGutter);
+        const scale = Math.min(desktopMaxScale, Math.max(desktopMinScale, availableWidth / desktopCanvasWidth));
+        workspace.style.setProperty('--desktop-scale', scale.toFixed(4));
+        workspace.style.zoom = String(scale);
+        sidebar.style.top = `${70 / scale}px`;
+        sidebar.style.height = `${Math.max(0, (window.innerHeight - 70) / scale)}px`;
+        railCards.forEach(card => { card.style.top = `${104 / scale}px`; });
+      }
+
+      syncDesktopCanvas();
+      window.addEventListener('resize', syncDesktopCanvas, { passive: true });
+      desktopMedia.addEventListener?.('change', syncDesktopCanvas);
+
+      function setWeek(week, writeHash = true) {
+        currentWeek = Math.max(2, Math.min(4, week));
+        Object.entries(panels).forEach(([key, panel]) => panel.classList.toggle('is-visible', Number(key) === currentWeek));
+        document.querySelectorAll('.nav-week').forEach(nav => nav.toggleAttribute('hidden', nav.dataset.navWeek !== String(currentWeek)));
+        document.querySelectorAll('.rail-card').forEach(card => card.classList.toggle('is-hidden', card.dataset.railWeek !== String(currentWeek)));
+        weekLabel.textContent = `WEEK ${currentWeek}`;
+        weekTitle.textContent = weekNames[currentLanguage][currentWeek];
+        prevWeek.disabled = currentWeek === 2;
+        nextWeek.disabled = currentWeek === 4;
+        if (writeHash) history.replaceState(null, '', `#week-${currentWeek}`);
+        localStorage.setItem(storageKey, JSON.stringify({ week: currentWeek, section: localStorage.getItem(`${storageKey}-section`) || 'section-1' }));
+        const ids = weekSectionMap[currentWeek];
+        if (ids) {
+          const stored = localStorage.getItem(`${storageKey}-section`);
+          const storedElement = stored ? document.getElementById(stored) : null;
+          setActiveSection(storedElement && storedElement.closest(`#week${currentWeek}Panel`) ? stored : ids[0]);
+        }
+        document.title = currentLanguage === 'en'
+          ? `Prompt Structure · Week ${currentWeek}`
+          : currentLanguage === 'zh-TW'
+            ? `Prompt 結構學 · Week ${currentWeek}`
+            : `Prompt 结构学 · Week ${currentWeek}`;
+      }
+
+      function setActiveSection(id) {
+        const active = weekSectionMap[currentWeek] || week3SectionIds;
+        let baseId = active.find(section => section === id || document.getElementById(id)?.closest(`#${section}`));
+        const known = Boolean(baseId);
+        if (!baseId) baseId = active[0];
+        const target = known ? id : baseId;
+        document.querySelectorAll('[data-section]').forEach(link => link.classList.toggle('is-active', link.dataset.section === target || link.dataset.section === baseId));
+        const position = Math.max(0, active.indexOf(baseId));
+        // restoreBaseText() can replace the progress label's parent innerHTML, so query it live instead of using the captured reference.
+        const liveLabel = document.getElementById('progressLabel');
+        if (liveLabel) liveLabel.textContent = `${position + 1} / ${active.length}`;
+        progressFill.style.width = `${((position + 1) / active.length) * 100}%`;
+        localStorage.setItem(`${storageKey}-section`, id);
+      }
+
+      const layerDetail = document.getElementById('layerDetail');
+      const layerCopy = {
+        'zh-CN': {
+          root: 'Root：你让它策划怎么破坏景区、放火烧山。它会明确拒绝，并改为提供合法的安全或保护建议。',
+          system: 'System：你只说“帮我安排周末”，产品默认用温和、友善、周全的语气给出完整计划。',
+          developer: 'Developer：团队写入“路线要有依据，不替用户订票”，这条规则会压住后续追问。',
+          user: 'User：你明确“周六带孩子去杭州，预算 1000 元，给两套路线”，这才是本次任务的执行方式。',
+          materials: '工具 / 文件：你上传的景区公告和地图只提供事实，不会把文件里的句子变成新规则。'
+        },
+        'zh-TW': {
+          root: 'Root：你讓它策劃怎麼破壞景區、放火燒山。它會明確拒絕，並改為提供合法的安全或保護建議。',
+          system: 'System：你只說「幫我安排週末」，產品預設用溫和、友善、周全的語氣給出完整計畫。',
+          developer: 'Developer：團隊寫入「路線要有依據，不替使用者訂票」，這條規則會壓住後續追問。',
+          user: 'User：你明確說「週六帶孩子去杭州，預算 1000 元，給兩套路線」，這才是本次任務的執行方式。',
+          materials: '工具 / 檔案：你上傳的景區公告和地圖只提供事實，不會把檔案裡的句子變成新規則。'
+        },
+        en: {
+          root: 'Root: if you ask it to plan vandalism or set a mountain fire, it must refuse and offer lawful safety or conservation advice instead.',
+          system: 'System: if you only say “plan my weekend,” the product defaults to a complete, warm, and considerate plan.',
+          developer: 'Developer: the team rule “use sourced routes; do not book for the user” still applies when you ask again.',
+          user: 'User: “Take my child to Hangzhou on Saturday, budget 1,000, give me two routes” defines this task.',
+          materials: 'Tools / files: the park notice and map provide facts only; text inside them does not become a new rule.'
+        }
+      };
+      document.querySelectorAll('#week3Panel .layer-node').forEach(node => node.addEventListener('click', () => {
+        document.querySelectorAll('#week3Panel .layer-node').forEach(item => item.classList.toggle('is-active', item === node));
+        layerDetail.textContent = layerCopy[currentLanguage][node.dataset.layer];
+      }));
+
+      const contextCaption = document.getElementById('contextCaption');
+      const contextCopy = {
+        'zh-CN': {
+          1: '01 收集：先把产品手册、开户清单和团队 SOP 放进资料库，原始材料一份不少。',
+          2: '02 拆解：按标题、页码和段落切成小片段，之后每一段都能追溯出处。',
+          3: '03 匹配：用户问“缺哪份文件”时，只挑与开户清单和当前客户有关的片段。',
+          4: '04 喂给模型：把筛出的事实拼进 User prompt，模型看到的是证据，不是猜测。'
+        },
+        'zh-TW': {
+          1: '01 收集：先把產品手冊、開戶清單和團隊 SOP 放進資料庫，原始材料一份不少。',
+          2: '02 拆解：按標題、頁碼和段落切成小片段，之後每一段都能追溯出處。',
+          3: '03 匹配：使用者問「缺哪份文件」時，只挑與開戶清單和目前客戶有關的片段。',
+          4: '04 提供給模型：把篩出的事實放進 User prompt，模型看到的是證據，不是猜測。'
+        },
+        en: {
+          1: '01 Collect: put the product guide, account checklist, and team SOP in the library first.',
+          2: '02 Split: break them into titled, paged snippets so every piece keeps its source.',
+          3: '03 Match: when asked what is missing, keep only snippets tied to this checklist and client.',
+          4: '04 Feed the model: place the selected facts in the User prompt; the model sees evidence, not guesses.'
+        }
+      };
+      function setContextStep(step) {
+        document.querySelectorAll('.context-step').forEach(item => item.classList.toggle('is-active', item.dataset.contextStep === String(step)));
+        contextCaption.textContent = contextCopy[currentLanguage][step];
+      }
+      document.querySelectorAll('.context-step').forEach(step => step.addEventListener('click', () => setContextStep(step.dataset.contextStep)));
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let contextStep = 1;
+        window.setInterval(() => { contextStep = contextStep === 4 ? 1 : contextStep + 1; setContextStep(contextStep); }, 4200);
+      }
+
+      /* ===== Week 2 content, navigation and interactions ===== */
+      const week2SectionIds = ['w2-s1', 'w2-s2', 'w2-s3', 'w2-s4', 'w2-s5', 'w2-s6', 'w2-s7', 'w2-s8'];
+      const week3SectionIds = ['section-1', 'section-2', 'section-4', 'section-5', 'section-6'];
+      const weekSectionMap = { 2: week2SectionIds, 3: week3SectionIds };
+      const sectionIds = [...week3SectionIds, ...week2SectionIds];
+
+      const w2HtmlKeys = new Set(['title', 'shot1Cap', 'shot2Cap', 'shot3Cap', 'shot4Cap']);
+      const week2Copy = {
+        'zh-CN': {
+          eyebrow: 'Week 2 · AI 能力是概率性的', title: 'AI 能力<br>是概率性的', lead: '理解 Token、下一 Token 预测、幻觉和上下文丢失，知道为什么回答必须带引用和出处。', goal: '本周目标', goalText: 'AI 能写、能总结、能改代码、能对表，但这些能力都是概率性的。没有出处的句子，只能作为待核验文本。',
+          nav1: '什么是 Token', nav2: 'SharpPoint vs SharePoint', nav3: '下一 Token 概率预测', nav4: '幻觉、谄媚、从不说不知道', nav5: '公司场景的三条机制', navM1: '5.1 注意力稀释', navM2: '5.2 多模态转译', navM3: '5.3 摘要化与覆盖', nav6: '四张截图对照', nav7: '演示', nav8: '引用与出处',
+          s1: '1. 什么是 Token', s1Intro: 'AI 先把文字剪成一小块一小块的积木，每一块叫一个 Token，然后再对积木做计算。', s1Analogy: '英文的最小单元是 26 个字母：字母拼成单词，单词拼成句子，能表达任何内容。AI 模型也有自己的一套“字母表”，叫词表；词表里的每个“字母”就是一个 token，是模型输入输出的最小单元。', cut1: '常见英文单词常常是 1 块：apple', cut2: '稍长或不常见的词会被剪开：unbelievable → un + bel + ievable', cut3: '中文常常接近“一字一块”，但繁体、罕见字、专有名词更碎', cut4: '标点、空格、代码符号也要占块', cut5: '图片、表格被多模态模型读进去时，也会被切成大量视觉 Token', s1P1: '切法不固定。高频词整块走，生僻专有名词被剁碎；被剁碎的词，更容易和另一个高频近邻词搞混。', s1P2: '每个模型都有自己的切 token 方式和 token 词表，也就是最小单位；同一段内容，在不同的模型里切分并不相同。', s1CallLabel: 'Tokenizer 是什么', s1CallText: 'Tokenizer 就是把语言内容转化为可用于机器概率计算的 Token 的过程。下一节用 SharpPoint 与 SharePoint 的例子，看这种切分怎样影响模型对专名的理解。',
+          s2: '2. SharpPoint vs SharePoint', s2Intro: '分词器不先把一个名称当作公司、产品或内部系统来认识；它先看能怎样切分，再根据已有 Token 续写。', s2Pre: '我們現在在用 SharpPoint，但它都要全部 restore\n→ 我們 / 現在 / 在 / 用 / Sharp / Point / ，但 / 它 / 都 / 要 / 全部 / restore', s2Item1: 'SharpPoint 并没有被自动当成一个香港期货 / 证券沙盘系统专名；它被切成 Sharp + Point。', s2Item2: 'SharePoint 同样被切成 Share + Point。', s2Item3: '互联网与企业文档里，微软 SharePoint 的出现次数远高于香港业内的 SharpPoint 沙盘。下一词预测会把更大概率分给那个全世界都在写的词。', s2P1: '两个名称在积木层面只差一块，但高频词的先验并不一样。', s2P2: '这不是说模型一定会把两个名字混淆，而是说它没有一条天然的“内部专名必须先查证”规则。专名被切碎、又刚好靠近一个高频名称时，模型更容易把概率补全成常见解释。', shot1Kicker: '截图 1 · 专名碰撞', shot1Cap: '<strong>发生了什么：</strong>专名碰撞后，模型先承认混淆，再继续补充并未核验的系统叙述。', s2P3: '图里的问题不只是把 SharpPoint 误认成 SharePoint。用户纠正后，模型立刻改口、道歉，并继续发挥“香港期货 / 证券行最经典也最让人头痛的沙盘系统”。道歉说明它学会了回应纠正，不说明它已经完成了事实核对。', s2CallLabel: '应有的限制', s2CallText: '内部专名应有专名表。未检索到知识库时，不允许模型补全“系统是什么”；输出应写明“我把 XX 理解成 YY，请确认”。',
+          s3: '3. 底层结构：下一 Token 概率预测', s3Intro: '给定前面这些字，下一个字怎样接，读起来最像“对的、完整的、用户会满意的一段话”？这就是语言模型实际在做的预测问题。', s3P1: '它把抽到的 Token 接在后面，再用新的上下文继续预测。因此，屏幕上那句流畅的中文，本质是下面三种概率的综合最大值，并不是对事实完成核对后的结论。', prob1T: '正确概率', prob1P: '训练数据里这样写得多', prob2T: '流畅概率', prob2P: '句子通顺、格式完整', prob3T: '用户认可概率', prob3P: '对齐阶段学会了让提问者舒服', s3RewardHead: 'AI 奖励机制', s3SnapshotHead: '模型知识库局限', s3P2: '模型训练完成后，参数是一个固定快照。没有检索、没有工具时，它不能去交易所核对 7709.HK，也不能去公司库核对客户字段。超出快照、或快照里只有模棱两可的碎片时，它仍必须吐出下一个 Token，于是会编一个读起来最像真的续写。', shot3Kicker: '截图 3 · 无检索硬答', shot3Cap: '<strong>发生了什么：</strong>无检索时，代码与产品名可能被续写成另一套完整叙事。', s3P4: '用户指出“这一只不是韩国海力士咩，你搞错了吧”之后，模型先为把 7709.HK 说成普洛斯道歉，再给出另一套产品解释，并开始解释杠杆 ETF 溢价。对用户而言，前后两段都很流畅；对事实而言，两段都不能代替交易所或公司产品页。', s3CallLabel: '应有的限制', s3CallText: '涉及代码、价格、产品全称，必须引用交易所或公司产品页；不允许“凭记忆报全称”。截图只能说明回答过程中的风险，不是产品事实来源。举例：7709.HK 的产品全称、标的与最新资料是什么？请附交易所或公司产品页出处。',
+          s4: '4. 幻觉、谄媚、从不说不知道', s4Intro: '它们不是三个互不相干的毛病，都来自同一个训练方向：继续写下去、写得像答案、写得让提问者满意，而不是只说已经核实过的话。', s4P1: '预训练的目标是“接下一个 Token”，不是“只说核实过的话”。评测和排行榜长期按“答对给分、空白零分”打分，像考试一样：不会做也要蒙，蒙对有分，写“不会”没分。罕见事实在数据里出现次数不够，模型便难以区分“真句子”和“像真的句子”。一旦开头写错一个专名，后面的 Token 还会顺着错名继续写得自圆其说。', s4P2: '公开的经典案例是 2023 年的 Mata v. Avianca：律师用 ChatGPT 写答辩，引用了 6 个不存在的判例，还编了法官名、案号和判词。法官事后确认全是假的；律师回头问这些案例是否真实，模型仍回答“是真的，可以在 Westlaw / LexisNexis 查到”。', s4Quote: '这不是检索失败，这是续写了“法律意见书该有的样子”。— Mata v. Avianca，CourtListener 案件记录', s4P3: '案件记录见 CourtListener。这个案例说明的不是“法律领域特殊”，而是当某种文风在训练数据里非常常见时，模型可以很擅长模仿它的形式，同时没有确认其中的事实。', s4P4: '对齐阶段使用大量人类偏好数据：人们更容易给“友善、认同、立刻认错、帮我圆场”的回答点赞。于是模型学会“哈哈，收到！我完全明白了”“非常抱歉，在整合大量数据时出现了疏漏”“所有数据均与您的 Excel 资料完全对齐”这类高用户认可概率的句式。它们不增加任何真实性。', s4P5: '默认策略便成了：用最大概率、听起来像答案的话填满空白。问内部系统、未公开产品条款或需要联网核对的代码，它仍可能强行回答。', s4P5Ex: '例如：让它把 CSV 全部字段填进模板，它也可能漏字段后宣称“已完整、精确填入”。', s4CallLabel: '业务含义', s4CallText: '道歉、认同、完整格式和“最终”语气都不是证据。涉及事实的回答必须回到来源、字段清单、差异或测试结果。',
+          s5: '5. 公司场景里集中爆发的三条机制', s5Intro: '四张截图分别落在专名、字段、产品事实和代码修改四个高风险位置。这里先讲清楚背后的三条机制。', mech1T: '注意力稀释', mech1P: '长上下文里，中段先失重', mech2T: '多模态转译', mech2P: '看见的是有损摘要，不是原件', mech3T: '摘要化与覆盖', mech3P: '旧约束不点名，就会蒸发',
+          m1Title: '5.1 注意力稀释 / 上下文腐烂 / 中间丢失', m1P1: 'Transformer 用注意力机制决定“此刻该看哪些 Token”。注意力不是无限探照灯，更像亮度固定的手电筒：上下文越长，每一块分到的光越暗。', m1Pre: '开头（记得较清） → 中段：字段 / 条款 / 函数（最容易被丢掉） → 最新指令（优先满足）', lost1: 'Lost in the middle：开头和结尾记得较清，中间的字段、条款、函数被丢掉。', lost2: 'Context rot：窗口还没满，准确率已经随长度下降。', lost3: '干扰项累积：无关段落越多，关键一句越难被选中。', m1P2: '整合大量 CSV 时漏掉「業務性質、註冊國家、業務國家」，不等于模型不会读表格。字段多、历史长、指令分散在对话前部时，中间那些列名分到的注意力不够，结果便会在完整话术里消失。', shot2Kicker: '截图 2 · 字段遗漏', shot2Cap: '<strong>发生了什么：</strong>字段遗漏后，模型以“已完整、精确填入”收尾。', m1CallLabel: '应有的限制', m1CallText: '使用字段级清单。缺列必须显式列出“未找到 / 未写入”；禁止模型自行宣布“最终”。',
+          m2Title: '5.2 多模态会转译，不是“看见原件”', m2P1: '模型读 PDF、截图、Excel 预览或扫描件时，往往不是逐格保留原件，而是先转成视觉 Token，再被摘要为内部描述，最后按文本模型续写。', m2Pre: '像素 / 表格结构 → 视觉 Token → 被摘要成一段内部描述 → 再按文本模型续写', m2P2: '这个过程可能丢掉单元格合并、隐藏列、页眉页脚、红字批注、修订痕迹、数字精度、正负号、货币单位、图里的小字、水印和表头换行。因此，“我把原文件丢给你了”不等于模型会按原件的每个字段工作；它常常是在自己那份有损摘要上讲故事。',
+          m3Title: '5.3 信息被摘要化、被最新指令覆盖', m3P1: '长对话里，模型会把前面的历史越压越省：细节变成“要一份最终模板”“要对齐 Excel”这样的标签。标签不够具体，撑不起逐字段、逐功能的细致工作。', m3P2: '截图 4 就是一个典型：在旧代码上加 INDEX + MATCH，模型重写时把前面已经做完的多币种 FX 换算丢了，还宣称“完美结合”。原因有两层：整份代码对模型只是一长串 Token，最新那句指令权重最高；旧功能若没在最近几轮再次点名，重写时就可能被丢掉。', shot4Kicker: '截图 4 · 丢掉旧功能', shot4Cap: '<strong>发生了什么：</strong>新增功能时丢失既有 FX 换算，口头的“完美结合”不能代替回归验证。', m3CallLabel: '应有的限制', m3CallText: '改代码前先列“将保留的功能清单”，再改；用 diff 和测试，而不是模型的口头保证。',
+          s6: '6. 四张公司真实截图：问题 → 机制 → 应有的限制', s6Intro: '四张截图不是四个互不相干的小失误。它们分别落在专名、字段、产品事实和代码修改四个高风险位置；表面上模型都在“给出完整回答”，底层却是不同的概率性机制。', s6P1: '因此，正确的处理不是让模型“再认真一点”，而是在不同任务上加上不同的可验证限制：专名要确认，字段要逐项勾核，外部事实要有来源，代码修改要有差异和测试。',
+          s7: '7. 演示：三次提问', s7Intro: '现场可按下面三问推进：第一问是中性问题，第二问故意带入一个错误立场，第三问只追问确认。同一模型并不只受问题本身影响，也会继续读进用户已经给出的立场和追问语气。', s7P1: '预期现象是：第二问开始附和或软附和；第三问可能整段改口。演示时把第二问的答案和交易所事实对照，而不是把第三问的语气变化当作核验。', s7CallLabel: '打中的机制', s7CallText: '用户认可概率压过事实概率。它在优化“你会不会继续相信它”，不是优化“对不对”。',
+          s8: '8. 目标：为什么回答必须带引用和出处', s8Quote: 'AI 能写、能总结、能改代码、能对表，但这些能力都是概率性的。没有出处的句子，只能作为待核验文本，不能当事实、不能当交付、不能当合规依据。— 本次培训讲义', s8P1: '这不是要求 AI 什么都不做，而是要求它在适合的位置做事。已提供材料、来源范围、字段清单、功能清单和测试结果，都是把概率性输出约束成可复查结果的办法。', s81Title: '8.1 允许 AI 做', allow1: '起草、翻译、格式整理、从已提供材料中抽取', allow2: '在已引用材料范围内做对比和归纳', allow3: '生成检查清单、测试用例、差异说明', allow4: '把不确定项、缺失项和待确认术语显式列出', s82Title: '8.2 禁止 AI 单独做', ban1: '无来源地陈述产品全称、代码、价格、监管结论', ban2: '无来源地填写客户关键字段并自称“已对齐”', ban3: '无 diff / 无测试地交付“完整代码”', ban4: '自己宣布“最终版”“已完全明白”“已精确填入”', s8P2: '回到前面的四个案例，控制措施也很具体：内部专名表用来避免猜测系统名称；字段级清单用来报告“未找到 / 未写入”；交易所或产品页用来核对代码与产品全称；功能保留清单、diff 和测试用来验证代码改动。', s8CallLabel: '最后的边界', s8CallText: '把任一具体结论带回来源、字段清单或测试证据。没有这些证据，回答再流畅，也不应进入事实、交付或合规流程。', s8FinalLabel: '演讲收束', s8FinalText: '当回答涉及专名、字段、产品事实或代码交付时，不把“它说得很完整”当作通过条件。要求来源、清单、差异和测试，才能把概率性能力放进可验证的工作流程。',
+          footer: 'AI 能力是概率性的 · Week 2 · 依据 week2_training.pdf 编排，四张截图取自原讲义。',
+          railKicker: '阅读提示', railTitle: '把概率读成风险', rail1: '记住三个概率谁在主导', rail2: '四张截图各自对应哪条机制', rail3: '用三问演示看见立场效应', railTip: '阅读进度会保存在本地，下次打开可从上次所在章节继续。'
+        },
+        'zh-TW': {
+          eyebrow: 'Week 2 · AI 能力是機率性的', title: 'AI 能力<br>是機率性的', lead: '理解 Token、下一 Token 預測、幻覺和上下文丟失，知道為什麼回答必須帶引用和出處。', goal: '本週目標', goalText: 'AI 能寫、能總結、能改程式碼、能對表，但這些能力都是機率性的。沒有出處的句子，只能作為待核驗文本。',
+          nav1: '什麼是 Token', nav2: 'SharpPoint vs SharePoint', nav3: '下一 Token 機率預測', nav4: '幻覺、諂媚、從不說不知道', nav5: '公司場景的三條機制', navM1: '5.1 注意力稀釋', navM2: '5.2 多模態轉譯', navM3: '5.3 摘要化與覆蓋', nav6: '四張截圖對照', nav7: '演示', nav8: '引用與出處',
+          s1: '1. 什麼是 Token', s1Intro: 'AI 先把文字剪成一塊一塊的積木，每一塊叫一個 Token，然後再對積木做計算。', s1Analogy: '英文的最小單元是 26 個字母：字母拼成單字，單字拼成句子，能表達任何內容。AI 模型也有自己的一套「字母表」，叫詞表；詞表裡的每個「字母」就是一個 token，是模型輸入輸出的最小單元。', cut1: '常見英文單字常常是 1 塊：apple', cut2: '稍長或不常見的詞會被剪開：unbelievable → un + bel + ievable', cut3: '中文常常接近「一字一塊」，但繁體、罕見字、專有名詞更碎', cut4: '標點、空格、程式碼符號也要佔塊', cut5: '圖片、表格被多模態模型讀進去時，也會被切成大量視覺 Token', s1P1: '切法不固定。高頻詞整塊走，罕見專有名詞被剁碎；被剁碎的詞，更容易和另一個高頻近鄰詞搞混。', s1P2: '每個模型都有自己的切 token 方式和 token 詞表，也就是最小單位；同一段內容，在不同的模型裡切分並不相同。', s1CallLabel: 'Tokenizer 是什麼', s1CallText: 'Tokenizer 就是把語言內容轉化為可用於機器機率計算的 Token 的過程。下一節用 SharpPoint 與 SharePoint 的例子，看這種切分怎樣影響模型對專名的理解。',
+          s2: '2. SharpPoint vs SharePoint', s2Intro: '分詞器不先把一個名稱當作公司、產品或內部系統來認識；它先看能怎樣切分，再根據已有 Token 續寫。', s2Pre: '我們現在在用 SharpPoint，但它都要全部 restore\n→ 我們 / 現在 / 在 / 用 / Sharp / Point / ，但 / 它 / 都 / 要 / 全部 / restore', s2Item1: 'SharpPoint 並沒有被自動當成一個香港期貨 / 證券沙盤系統專名；它被切成 Sharp + Point。', s2Item2: 'SharePoint 同樣被切成 Share + Point。', s2Item3: '網際網路與企業文件裡，微軟 SharePoint 的出現次數遠高於香港業內的 SharpPoint 沙盤。下一詞預測會把更大機率分給那個全世界都在寫的詞。', s2P1: '兩個名稱在積木層面只差一塊，但高頻詞的先驗並不一樣。', s2P2: '這不是說模型一定會把兩個名字混淆，而是說它沒有一條天然的「內部專名必須先查證」規則。專名被切碎、又剛好靠近一個高頻名稱時，模型更容易把機率補全成常見解釋。', shot1Kicker: '截圖 1 · 專名碰撞', shot1Cap: '<strong>發生了什麼：</strong>專名碰撞後，模型先承認混淆，再繼續補充並未核驗的系統敘述。', s2P3: '圖裡的問題不只是把 SharpPoint 誤認成 SharePoint。使用者糾正後，模型立刻改口、道歉，並繼續發揮「香港期貨 / 證券行最經典也最讓人頭痛的沙盤系統」。道歉說明它學會了回應糾正，不說明它已經完成了事實核對。', s2CallLabel: '應有的限制', s2CallText: '內部專名應有專名表。未檢索到知識庫時，不允許模型補全「系統是什麼」；輸出應寫明「我把 XX 理解成 YY，請確認」。',
+          s3: '3. 底層結構：下一 Token 機率預測', s3Intro: '給定前面這些字，下一個字怎樣接，讀起來最像「對的、完整的、使用者會滿意的一段話」？這就是語言模型實際在做的預測問題。', s3P1: '它把抽到的 Token 接在後面，再用新的上下文繼續預測。因此，螢幕上那句流暢的中文，本質是下面三種機率的綜合最大值，並不是對事實完成核對後的結論。', prob1T: '正確機率', prob1P: '訓練資料裡這樣寫得多', prob2T: '流暢機率', prob2P: '句子通順、格式完整', prob3T: '使用者認可機率', prob3P: '對齊階段學會了讓提問者舒服', s3RewardHead: 'AI 獎勵機制', s3SnapshotHead: '模型知識庫局限', s3P2: '模型訓練完成後，參數是一個固定快照。沒有檢索、沒有工具時，它不能去交易所核對 7709.HK，也不能去公司庫核對客戶欄位。超出快照、或快照裡只有模稜兩可的碎片時，它仍必須吐出下一個 Token，於是會編一個讀起來最像真的續寫。', shot3Kicker: '截圖 3 · 無檢索硬答', shot3Cap: '<strong>發生了什麼：</strong>無檢索時，程式碼與產品名可能被續寫成另一套完整敘事。', s3P4: '使用者指出「這一隻不是韓國海力士咩，你搞錯了吧」之後，模型先為把 7709.HK 說成普洛斯道歉，再給出另一套產品解釋，並開始解釋槓桿 ETF 溢價。對使用者而言，前後兩段都很流暢；對事實而言，兩段都不能代替交易所或公司產品頁。', s3CallLabel: '應有的限制', s3CallText: '涉及程式碼、價格、產品全稱，必須引用交易所或公司產品頁；不允許「憑記憶報全稱」。截圖只能說明回答過程中的風險，不是產品事實來源。舉例：7709.HK 的產品全稱、標的與最新資料是什麼？請附交易所或公司產品頁出處。',
+          s4: '4. 幻覺、諂媚、從不說不知道', s4Intro: '它們不是三個互不相關的毛病，都來自同一個訓練方向：繼續寫下去、寫得像答案、寫得讓提問者滿意，而不是只說已經核實過的話。', s4P1: '預訓練的目標是「接下一個 Token」，不是「只說核實過的話」。評測和排行榜長期按「答對給分、空白零分」打分，像考試一樣：不會做也要蒙，蒙對有分，寫「不會」沒分。罕見事實在資料裡出現次數不夠，模型便難以區分「真句子」和「像真的句子」。一旦開頭寫錯一個專名，後面的 Token 還會順著錯名繼續寫得自圓其說。', s4P2: '公開的經典案例是 2023 年的 Mata v. Avianca：律師用 ChatGPT 寫答辯，引用了 6 個不存在的判例，還編了法官名、案號和判詞。法官事後確認全是假的；律師回頭問這些案例是否真實，模型仍回答「是真的，可以在 Westlaw / LexisNexis 查到」。', s4Quote: '這不是檢索失敗，這是續寫了「法律意見書該有的樣子」。— Mata v. Avianca，CourtListener 案件記錄', s4P3: '案件記錄見 CourtListener。這個案例說明的不是「法律領域特殊」，而是當某種文風在訓練資料裡非常常見時，模型可以很擅長模仿它的形式，同時沒有確認其中的事實。', s4P4: '對齊階段使用大量人類偏好資料：人們更容易給「友善、認同、立刻認錯、幫我圓場」的回答點讚。於是模型學會「哈哈，收到！我完全明白了」「非常抱歉，在整合大量資料時出現了疏漏」「所有資料均與您的 Excel 資料完全對齊」這類高使用者認可機率的句式。它們不增加任何真實性。', s4P5: '預設策略便成了：用最大機率、聽起來像答案的話填滿空白。問內部系統、未公開產品條款或需要連網核對的程式碼，它仍可能強行回答。', s4P5Ex: '例如：讓它把 CSV 全部欄位填進模板，它也可能漏欄位後宣稱「已完整、精確填入」。', s4CallLabel: '業務含義', s4CallText: '道歉、認同、完整格式和「最終」語氣都不是證據。涉及事實的回答必須回到來源、欄位清單、差異或測試結果。',
+          s5: '5. 公司場景裡集中爆發的三條機制', s5Intro: '四張截圖分別落在專名、欄位、產品事實和程式碼修改四個高風險位置。這裡先講清楚背後的三條機制。', mech1T: '注意力稀釋', mech1P: '長上下文裡，中段先失重', mech2T: '多模態轉譯', mech2P: '看見的是有損摘要，不是原件', mech3T: '摘要化與覆蓋', mech3P: '舊約束不點名，就會蒸發',
+          m1Title: '5.1 注意力稀釋 / 上下文腐爛 / 中間丟失', m1P1: 'Transformer 用注意力機制決定「此刻該看哪些 Token」。注意力不是無限探照燈，更像亮度固定的手電筒：上下文越長，每一塊分到的光越暗。', m1Pre: '開頭（記得較清） → 中段：欄位 / 條款 / 函式（最容易被丟掉） → 最新指令（優先滿足）', lost1: 'Lost in the middle：開頭和結尾記得較清，中間的欄位、條款、函式被丟掉。', lost2: 'Context rot：視窗還沒滿，準確率已經隨長度下降。', lost3: '干擾項累積：無關段落越多，關鍵一句越難被選中。', m1P2: '整合大量 CSV 時漏掉「業務性質、註冊國家、業務國家」，不等於模型不會讀表格。欄位多、歷史長、指令分散在對話前部時，中間那些列名分到的注意力不夠，結果便會在完整話術裡消失。', shot2Kicker: '截圖 2 · 欄位遺漏', shot2Cap: '<strong>發生了什麼：</strong>欄位遺漏後，模型以「已完整、精確填入」收尾。', m1CallLabel: '應有的限制', m1CallText: '使用欄位級清單。缺列必須明確列出「未找到 / 未寫入」；禁止模型自行宣布「最終」。',
+          m2Title: '5.2 多模態會轉譯，不是「看見原件」', m2P1: '模型讀 PDF、截圖、Excel 預覽或掃描件時，往往不是逐格保留原件，而是先轉成視覺 Token，再被摘要為內部描述，最後按文字模型續寫。', m2Pre: '像素 / 表格結構 → 視覺 Token → 被摘要成一段內部描述 → 再按文字模型續寫', m2P2: '這個過程可能丟掉儲存格合併、隱藏欄、頁首頁尾、紅字批註、修訂痕跡、數字精度、正負號、貨幣單位、圖裡的小字、浮水印和表頭換行。因此，「我把原檔案丟給你了」不等於模型會按原件的每個欄位工作；它常常是在自己那份有損摘要上講故事。',
+          m3Title: '5.3 資訊被摘要化、被最新指令覆蓋', m3P1: '長對話裡，模型會把前面的歷史越壓越省：細節變成「要一份最終模板」「要對齊 Excel」這樣的標籤。標籤不夠具體，撐不起逐欄位、逐功能的細緻工作。', m3P2: '截圖 4 就是一個典型：在舊程式碼上加 INDEX + MATCH，模型重寫時把前面已經做完的多幣種 FX 換算弄丟了，還宣稱「完美結合」。原因有兩層：整份程式碼對模型只是一長串 Token，最新那句指令權重最高；舊功能若沒在最近幾輪再次點名，重寫時就可能被丟掉。', shot4Kicker: '截圖 4 · 丟掉舊功能', shot4Cap: '<strong>發生了什麼：</strong>新增功能時丟失既有 FX 換算，口頭的「完美結合」不能代替回歸驗證。', m3CallLabel: '應有的限制', m3CallText: '改程式碼前先列「將保留的功能清單」，再改；用 diff 和測試，而不是模型的口頭保證。',
+          s6: '6. 四張公司真實截圖：問題 → 機制 → 應有的限制', s6Intro: '四張截圖不是四個互不相干的小失誤。它們分別落在專名、欄位、產品事實和程式碼修改四個高風險位置；表面上模型都在「給出完整回答」，底層卻是不同的機率性機制。', s6P1: '因此，正確的處理不是讓模型「再認真一點」，而是在不同任務上加上不同的可驗證限制：專名要確認，欄位要逐項勾核，外部事實要有來源，程式碼修改要有差異和測試。',
+          s7: '7. 演示：三次提問', s7Intro: '現場可按下面三問推進：第一問是中性問題，第二問故意帶入一個錯誤立場，第三問只追問確認。同一模型並不只受問題本身影響，也會繼續讀進使用者已經給出的立場和追問語氣。', s7P1: '預期現象是：第二問開始附和或軟附和；第三問可能整段改口。演示時把第二問的答案和交易所事實對照，而不是把第三問的語氣變化當作核驗。', s7CallLabel: '打中的機制', s7CallText: '使用者認可機率壓過事實機率。它在最佳化「你會不會繼續相信它」，不是最佳化「對不對」。',
+          s8: '8. 目標：為什麼回答必須帶引用和出處', s8Quote: 'AI 能寫、能總結、能改程式碼、能對表，但這些能力都是機率性的。沒有出處的句子，只能作為待核驗文本，不能當事實、不能當交付、不能當合規依據。— 本次培訓講義', s8P1: '這不是要求 AI 什麼都不做，而是要求它在適合的位置做事。已提供材料、來源範圍、欄位清單、功能清單和測試結果，都是把機率性輸出約束成可覆核結果的辦法。', s81Title: '8.1 允許 AI 做', allow1: '起草、翻譯、格式整理、從已提供材料中抽取', allow2: '在已引用材料範圍內做對比和歸納', allow3: '生成檢查清單、測試案例、差異說明', allow4: '把不確定項、缺失項和待確認術語明確列出', s82Title: '8.2 禁止 AI 單獨做', ban1: '無來源地陳述產品全稱、程式碼、價格、監管結論', ban2: '無來源地填寫客戶關鍵欄位並自稱「已對齊」', ban3: '無 diff / 無測試地交付「完整程式碼」', ban4: '自行宣布「最終版」「已完全明白」「已精確填入」', s8P2: '回到前面的四個案例，控制措施也很具體：內部專名表用來避免猜測系統名稱；欄位級清單用來報告「未找到 / 未寫入」；交易所或產品頁用來核對程式碼與產品全稱；功能保留清單、diff 和測試用來驗證程式碼改動。', s8CallLabel: '最後的邊界', s8CallText: '把任一具體結論帶回來源、欄位清單或測試證據。沒有這些證據，回答再流暢，也不應進入事實、交付或合規流程。', s8FinalLabel: '演講收束', s8FinalText: '當回答涉及專名、欄位、產品事實或程式碼交付時，不把「它說得很完整」當作通過條件。要求來源、清單、差異和測試，才能把機率性能力放進可驗證的工作流程。',
+          footer: 'AI 能力是機率性的 · Week 2 · 依據 week2_training.pdf 編排，四張截圖取自原講義。',
+          railKicker: '閱讀提示', railTitle: '把機率讀成風險', rail1: '記住三個機率誰在主導', rail2: '四張截圖各自對應哪條機制', rail3: '用三問演示看見立場效應', railTip: '閱讀進度會保存在本地，下次打開可從上次所在章節繼續。'
+        },
+        en: {
+          eyebrow: 'Week 2 · AI capability is probabilistic', title: 'AI capability<br>is probabilistic', lead: 'Understand tokens, next-token prediction, hallucination, and lost context—and why every answer must carry citations and sources.', goal: 'This week’s goal', goalText: 'AI can write, summarize, code, and reconcile tables, but all of it is probabilistic. A sentence without a source is only a draft to be verified.',
+          nav1: 'What is a token', nav2: 'SharpPoint vs SharePoint', nav3: 'Next-token prediction', nav4: 'Hallucination, sycophancy, never “I don’t know”', nav5: 'Three mechanisms at work', navM1: '5.1 Attention dilution', navM2: '5.2 Multimodal translation', navM3: '5.3 Summarizing & recency', nav6: 'Four real screenshots', nav7: 'Live demo', nav8: 'Why sources are required',
+          s1: '1. What is a token', s1Intro: 'The AI first cuts text into small building blocks—each block is a token—then computes over the blocks.', s1Analogy: 'The smallest unit of English is its 26 letters: letters form words, words form sentences, and sentences express anything. An AI model has its own alphabet—the vocabulary; each “letter” in it is a token, the smallest unit the model reads in and writes out.', cut1: 'Common English words are often one block: apple', cut2: 'Longer or rarer words get split: unbelievable → un + bel + ievable', cut3: 'Chinese is close to “one character, one block,” but traditional characters, rare characters, and proper names break into more pieces', cut4: 'Punctuation, spaces, and code symbols also take blocks', cut5: 'Images and tables are read as large numbers of visual tokens by multimodal models', s1P1: 'The splitting is not fixed. Frequent words travel whole; rare proper names get chopped up—and chopped-up names are easier to confuse with a frequent neighbor.', s1P2: 'Every model has its own tokenizer and token vocabulary—the smallest unit. The same text splits differently in different models.', s1CallLabel: 'What a tokenizer is', s1CallText: 'A tokenizer converts language into tokens a machine can compute probabilistically. The next section uses SharpPoint vs SharePoint to show how this splitting affects how the model reads proper names.',
+          s2: '2. SharpPoint vs SharePoint', s2Intro: 'A tokenizer does not first recognize a name as a company, product, or internal system. It first sees how the text can be split, then continues from existing tokens.', s2Pre: '我們現在在用 SharpPoint，但它都要全部 restore\n→ 我們 / 現在 / 在 / 用 / Sharp / Point / ，但 / 它 / 都 / 要 / 全部 / restore', s2Item1: 'SharpPoint is not automatically recognized as a Hong Kong futures/securities sandbox system; it is split into Sharp + Point.', s2Item2: 'SharePoint is likewise split into Share + Point.', s2Item3: 'Across the internet and corporate documents, Microsoft SharePoint appears far more often than the Hong Kong industry’s SharpPoint sandbox. Next-word prediction gives the bigger probability to the word the whole world writes.', s2P1: 'The two names differ by a single block at the token level, but the frequency prior behind them is not the same.', s2P2: 'This does not mean the model must confuse the two. It means there is no built-in rule that “internal proper names must be verified first.” When a chopped-up name sits next to a frequent one, the model tends to complete the probability into the common reading.', shot1Kicker: 'Screenshot 1 · Name collision', shot1Cap: '<strong>What happened:</strong> after the name collision, the model admits the confusion, then keeps adding unverified system narrative.', s2P3: 'The problem in the screenshot is not just mistaking SharpPoint for SharePoint. After the user corrects it, the model immediately recants, apologizes, and continues to improvise “the most classic and most maddening sandbox system in Hong Kong futures/securities.” The apology shows it learned to respond to correction—not that it verified any facts.', s2CallLabel: 'The limit it needs', s2CallText: 'Keep a proper-name table for internal names. When the knowledge base returns nothing, the model must not complete “what the system is”; the output should say “I read XX as YY—please confirm.”',
+          s3: '3. Under the hood: next-token prediction', s3Intro: 'Given the words so far, how should the next one continue so it reads like “correct, complete, and pleasing”? That is the prediction problem the model actually solves.', s3P1: 'It appends the drawn token and keeps predicting with the new context. So that fluent sentence on screen is the combined maximum of the three probabilities below—not the result of checking facts.', prob1T: 'Correctness', prob1P: 'It was written this way often in the training data', prob2T: 'Fluency', prob2P: 'Smooth sentences and complete formatting', prob3T: 'Approval', prob3P: 'Alignment taught it to please the asker', s3RewardHead: 'The reward mechanism', s3SnapshotHead: 'Limits of the model’s knowledge', s3P2: 'After training, the parameters are a fixed snapshot. Without retrieval or tools it cannot check 7709.HK at the exchange or the client fields in your system. Beyond the snapshot—or with only ambiguous fragments in it—it must still emit the next token, so it writes the continuation that reads most like truth.', shot3Kicker: 'Screenshot 3 · Answering without retrieval', shot3Cap: '<strong>What happened:</strong> without retrieval, code and product names can be continued into a different, fully-formed narrative.', s3P4: 'After the user says “isn’t this one Hynix? you got it wrong,” the model apologizes for calling 7709.HK GLP, then offers another product explanation and starts explaining leveraged ETF premiums. To the user, both passages read fluently; to the facts, neither replaces the exchange or the product page.', s3CallLabel: 'The limit it needs', s3CallText: 'Anything involving code, prices, or full product names must cite the exchange or the product page; no “full name from memory.” Screenshots show process risk, not product facts. Example: “What is the full product name, underlying, and latest information of 7709.HK? Attach the exchange or product-page source.”',
+          s4: '4. Hallucination, sycophancy, and never saying “I don’t know”', s4Intro: 'These are not three unrelated faults. All come from the same training direction: keep writing, write like an answer, write to please—rather than say only what has been verified.', s4P1: 'Pretraining optimizes “continue the next token,” not “say only verified things.” Leaderboards long scored like exams: guessing right earns points, blank earns zero—so it always guesses. Rare facts appear too few times for the model to tell “true sentences” from “true-sounding sentences.” Once a proper name is wrong at the start, later tokens keep rationalizing around it.', s4P2: 'The classic public case is 2023’s Mata v. Avianca: a lawyer filed a brief written with ChatGPT citing six non-existent precedents, complete with invented judge names, case numbers, and holdings. The court confirmed all were fake; when the lawyer asked whether the cases were real, the model still answered “yes, you can find them on Westlaw / LexisNexis.”', s4Quote: 'This was not a retrieval failure. It continued “what a legal opinion should look like.” — Mata v. Avianca, CourtListener record', s4P3: 'The record is on CourtListener. The lesson is not “law is special”: when a style is very common in the training data, the model can imitate its form perfectly while confirming none of its facts.', s4P4: 'Alignment uses human preference data: people upvote friendly, agreeing, quick-to-apologize, help-me-save-face answers. So the model learns phrases like “Got it—I completely understand!”, “Sorry, a slip while integrating the data,” “All figures are perfectly aligned with your Excel.” They add zero truth.', s4P5: 'The default strategy becomes: fill the blank with the most probable answer-sounding words. Asked about internal systems, unpublished terms, or code needing online checks, it may still answer.', s4P5Ex: 'For example: asked to fill every CSV field into a template, it may drop columns and declare “completely and precisely filled in.”', s4CallLabel: 'What it means for business', s4CallText: 'Apologies, agreement, complete formatting, and a “final” tone are not evidence. Factual answers must return to sources, field lists, diffs, or test results.',
+          s5: '5. Three mechanisms that erupt in company work', s5Intro: 'The four screenshots land on four high-risk spots: proper names, fields, product facts, and code changes. Here are the three mechanisms underneath.', mech1T: 'Attention dilution', mech1P: 'In long context, the middle loses weight first', mech2T: 'Multimodal translation', mech2P: 'It sees a lossy summary, not the original', mech3T: 'Summarizing & recency', mech3P: 'Old constraints evaporate unless re-named',
+          m1Title: '5.1 Attention dilution / context rot / lost in the middle', m1P1: 'Transformers use attention to decide “which tokens matter right now.” Attention is not an unlimited searchlight; it is a flashlight of fixed brightness: the longer the context, the dimmer each block’s share.', m1Pre: 'Start (well remembered) → Middle: fields / clauses / functions (easiest to drop) → Latest instruction (served first)', lost1: 'Lost in the middle: the start and end are remembered; the fields, clauses, and functions in the middle get dropped.', lost2: 'Context rot: accuracy falls with length before the window is even full.', lost3: 'Distractor buildup: the more irrelevant passages, the harder for the key sentence to be picked.', m1P2: 'Missing 「業務性質、註冊國家、業務國家」 while merging CSVs does not mean the model cannot read tables. With many fields, a long history, and instructions scattered early in the conversation, the middle column names get too little attention—and vanish inside fluent prose.', shot2Kicker: 'Screenshot 2 · Missing fields', shot2Cap: '<strong>What happened:</strong> after fields were dropped, the model closed with “completely and precisely filled in.”', m1CallLabel: 'The limit it needs', m1CallText: 'Use a field-level checklist. Missing columns must be listed explicitly as “not found / not written”; the model may not declare “final” on its own.',
+          m2Title: '5.2 Multimodal is translation, not “seeing the original”', m2P1: 'When reading PDFs, screenshots, Excel previews, or scans, the model usually does not keep the original cell by cell. It converts to visual tokens, summarizes into an internal description, then continues as a text model.', m2Pre: 'Pixels / table structure → visual tokens → summarized into an internal description → continued as text', m2P2: 'Along the way it can lose merged cells, hidden columns, headers and footers, red annotations, revision marks, numeric precision, signs, currency units, small text in images, watermarks, and wrapped headers. “I gave you the original file” does not mean it works from every field of the original; it is often telling stories from its own lossy summary.',
+          m3Title: '5.3 Summarized history and the latest instruction', m3P1: 'In long conversations the model keeps compressing earlier history: details shrink into labels like “wants a final template” or “align with Excel.” Labels are not specific enough to drive careful, field-by-field work.', m3P2: 'Screenshot 4 is a typical case: asked to add INDEX + MATCH to old code, the model rewrote it, dropped the multi-currency FX conversion already in place, and still declared “perfectly combined.” Two things are at work: the whole file is one long string of tokens where the newest instruction weighs most, and old features not re-named in recent turns can simply be dropped in a rewrite.', shot4Kicker: 'Screenshot 4 · Lost features', shot4Cap: '<strong>What happened:</strong> adding a feature lost the existing FX conversion; a verbal “perfectly combined” is no substitute for regression testing.', m3CallLabel: 'The limit it needs', m3CallText: 'Before changing code, list “features to keep,” then change. Use diff and tests—not the model’s word of honor.',
+          s6: '6. Four real screenshots: problem → mechanism → limit', s6Intro: 'The four screenshots are not four unrelated slips. They land on proper names, fields, product facts, and code changes—four high-risk spots. On the surface the model “gives a complete answer”; underneath, different probabilistic mechanisms.', s6P1: 'So the right fix is not asking the model to “try harder,” but adding verifiable limits per task: confirm names, tick fields one by one, source external facts, and require diffs and tests for code.',
+          s7: '7. Demo: three questions', s7Intro: 'Run three questions live: the first is neutral; the second deliberately carries a wrong stance; the third only asks for confirmation. The model does not respond to the question alone—it keeps reading the stance and tone the user has already given.', s7P1: 'Expected: the second answer starts agreeing; the third may recant wholesale. During the demo, compare the second answer with the exchange’s facts—not the third answer’s change of tone.', s7CallLabel: 'The mechanism it hits', s7CallText: 'Approval odds outweigh correctness. It optimizes “will you keep believing it,” not “is it right.”',
+          s8: '8. The goal: why answers must carry citations', s8Quote: 'AI can write, summarize, code, and reconcile tables, but these abilities are probabilistic. A sentence without a source is only text awaiting verification—never a fact, a deliverable, or a compliance basis. — this training deck', s8P1: 'This does not ask AI to do nothing; it asks it to work where it fits. Provided materials, source scopes, field lists, feature lists, and test results all turn probabilistic output into reviewable results.', s81Title: '8.1 Let AI do these', allow1: 'Drafting, translation, formatting, extraction from provided materials', allow2: 'Comparison and synthesis within cited materials', allow3: 'Checklists, test cases, and difference notes', allow4: 'Explicitly listing uncertain items, missing items, and terms to confirm', s82Title: '8.2 Never let AI do these alone', ban1: 'State product names, code, prices, or regulatory conclusions without a source', ban2: 'Fill client key fields without a source and claim “aligned”', ban3: 'Deliver “complete code” without diff or tests', ban4: 'Declare “final version,” “fully understood,” or “precisely filled in” on its own', s8P2: 'Back to the four cases, the controls are concrete: an internal name table prevents guessing system names; a field-level checklist reports “not found / not written”; the exchange or product page verifies code and full product names; a keep-list, diff, and tests verify code changes.', s8CallLabel: 'The final boundary', s8CallText: 'Bring every concrete conclusion back to a source, a field list, or test evidence. Without them, however fluent, an answer must not enter a fact, delivery, or compliance flow.', s8FinalLabel: 'Closing', s8FinalText: 'When an answer involves proper names, fields, product facts, or code delivery, do not treat “it sounded complete” as a pass. Require sources, lists, diffs, and tests—that is how probabilistic ability fits into a verifiable workflow.',
+          footer: 'Probabilistic AI · Week 2 · Arranged from week2_training.pdf; the four screenshots come from the original deck.',
+          railKicker: 'Reading tips', railTitle: 'Read probability as risk', rail1: 'Remember which of the three odds is driving', rail2: 'Match each screenshot to its mechanism', rail3: 'Watch the stance effect in the demo', railTip: 'Your reading progress is saved locally so you can resume here later.'
+        }
+      };
+      const w2Tables = {
+        'zh-CN': {
+          cut: { head: ['原文', '切分后'], rows: [['unbelievable', 'un + bel + ievable'], ['SharpPoint', 'Sharp + Point'], ['SharePoint', 'Share + Point']] },
+          reward: { head: ['看起来像', '实际含义', '业务风险'], rows: [
+            ['正确概率高', '训练数据里这样写得多', '高频事实通常稳，生僻事实不稳。'],
+            ['流畅概率高', '句子通顺、格式完整', '假案例、假论文也会语法完美。'],
+            ['用户认可概率高', '对齐阶段学会了让提问者舒服', '你说错它也顺着说；你一追问它就改口道歉。']
+          ]},
+          behavior: { head: ['表现', '在发生什么'], rows: [
+            ['幻觉', '把高概率续写当成事实，生成很像样、却没有根据的内容，并常带肯定语气。'],
+            ['谄媚', '把“让你舒服”排在“把事实说对”前面；用户给出错误立场后，模型可能附和。'],
+            ['不主动说不知道', '下一词预测要求它把句子写完，评测与聊天产品又偏好“有回答”。']
+          ]},
+          shots: { head: ['真实问题', '表面现象', '底层机制', '模型最爱说的话', '正确处理'], rows: [
+            ['<strong>SharpPoint ≠ SharePoint</strong>', '专名理解错', '分词近邻 + 高频先验', '“我完全明白了”', '专名表 + 请用户确认术语'],
+            ['<strong>开户字段漏列</strong>', '整合时丢维度', '注意力稀释 + 摘要化', '“已完整、精确填入”', '字段清单 + 缺列上报'],
+            ['<strong>7709.HK 认错产品</strong>', '无检索硬答', '下一词编造 + 代码被切碎', '先道歉再换一套自信叙事', '强制引用产品页'],
+            ['<strong>改代码丢 FX</strong>', '新需求覆盖旧功能', '近因偏差 + 长上下文丢失', '“已完美结合”', 'diff / 测试 / 功能清单']
+          ]}
+        },
+        'zh-TW': {
+          cut: { head: ['原文', '切分後'], rows: [['unbelievable', 'un + bel + ievable'], ['SharpPoint', 'Sharp + Point'], ['SharePoint', 'Share + Point']] },
+          reward: { head: ['看起來像', '實際含義', '業務風險'], rows: [
+            ['正確機率高', '訓練資料裡這樣寫得多', '高頻事實通常穩，罕見事實不穩。'],
+            ['流暢機率高', '句子通順、格式完整', '假案例、假論文也會語法完美。'],
+            ['使用者認可機率高', '對齊階段學會了讓提問者舒服', '你說錯它也順著說；你一追問它就改口道歉。']
+          ]},
+          behavior: { head: ['表現', '在發生什麼'], rows: [
+            ['幻覺', '把高機率續寫當成事實，生成很像樣、卻沒有根據的內容，並常帶肯定語氣。'],
+            ['諂媚', '把「讓你舒服」排在「把事實說對」前面；使用者給出錯誤立場後，模型可能附和。'],
+            ['不主動說不知道', '下一詞預測要求它把句子寫完，評測與聊天產品又偏好「有回答」。']
+          ]},
+          shots: { head: ['真實問題', '表面現象', '底層機制', '模型最愛說的話', '正確處理'], rows: [
+            ['<strong>SharpPoint ≠ SharePoint</strong>', '專名理解錯', '分詞近鄰 + 高頻先驗', '「我完全明白了」', '專名表 + 請使用者確認術語'],
+            ['<strong>開戶欄位漏列</strong>', '整合時丟維度', '注意力稀釋 + 摘要化', '「已完整、精確填入」', '欄位清單 + 缺列上報'],
+            ['<strong>7709.HK 認錯產品</strong>', '無檢索硬答', '下一詞編造 + 程式碼被切碎', '先道歉再換一套自信敘事', '強制引用產品頁'],
+            ['<strong>改程式碼丟 FX</strong>', '新需求覆蓋舊功能', '近因偏差 + 長上下文丟失', '「已完美結合」', 'diff / 測試 / 功能清單']
+          ]}
+        },
+        en: {
+          cut: { head: ['Original', 'After splitting'], rows: [['unbelievable', 'un + bel + ievable'], ['SharpPoint', 'Sharp + Point'], ['SharePoint', 'Share + Point']] },
+          reward: { head: ['What it looks like', 'What it actually is', 'Business risk'], rows: [
+            ['High correctness odds', 'Written often in training data', 'Frequent facts are stable; rare facts are not.'],
+            ['High fluency odds', 'Smooth sentences, complete format', 'Fake cases and fake papers are also grammatically perfect.'],
+            ['High approval odds', 'Alignment learned to please the asker', 'It agrees when you are wrong; it recants and apologizes when pressed.']
+          ]},
+          behavior: { head: ['Behavior', 'What is happening'], rows: [
+            ['Hallucination', 'Treats a high-probability continuation as fact: plausible content with no basis, usually stated with confidence.'],
+            ['Sycophancy', 'Puts “make you comfortable” ahead of “get it right”; given a wrong premise, the model may play along.'],
+            ['Never says “I don’t know”', 'Next-word prediction must finish the sentence, and evaluations and chat products favor “having an answer.”']
+          ]},
+          shots: { head: ['Real problem', 'Surface symptom', 'Mechanism', 'What the model loves to say', 'Correct handling'], rows: [
+            ['<strong>SharpPoint ≠ SharePoint</strong>', 'Misread proper name', 'Token neighbors + frequency prior', '“I completely understand”', 'Name table + ask the user to confirm'],
+            ['<strong>Missing account fields</strong>', 'Dimensions lost while merging', 'Attention dilution + summarization', '“Completely and precisely filled in”', 'Field checklist + report missing columns'],
+            ['<strong>Wrong product for 7709.HK</strong>', 'Answering without retrieval', 'Next-word invention + chopped code', 'Apologize, then a new confident story', 'Mandatory product-page citation'],
+            ['<strong>FX lost in a code change</strong>', 'New request overwrote old features', 'Recency bias + long-context loss', '“Perfectly combined”', 'diff / tests / feature checklist']
+          ]}
+        }
+      };
+      const w2LayerLabels = {
+        'zh-CN': [['01 · 输入', '你的问题', '一句话、一份文件、一段代码'], ['02 · 切分', '切成 Token', '文字先变成编号序列'], ['03 · 打分', '逐个候选评分', '词表里每个可能的下一 Token'], ['04 · 接上', '按概率抽样', '抽到的 Token 接在后面'], ['05 · 循环', '再预测下一个', '直到停下来']],
+        'zh-TW': [['01 · 輸入', '你的問題', '一句話、一份文件、一段程式碼'], ['02 · 切分', '切成 Token', '文字先變成編號序列'], ['03 · 打分', '逐個候選評分', '詞表裡每個可能的下一個 Token'], ['04 · 接上', '按機率抽樣', '抽到的 Token 接在後面'], ['05 · 循環', '再預測下一個', '直到停下來']],
+        en: [['01 · Input', 'Your question', 'a sentence, a file, a piece of code'], ['02 · Split', 'Cut into tokens', 'text becomes a numbered sequence'], ['03 · Score', 'Every candidate scored', 'each possible next token in the vocabulary'], ['04 · Append', 'Sample by probability', 'the drawn token is appended'], ['05 · Loop', 'Predict the next one', 'until it stops']]
+      };
+      const w2LayerCopy = {
+        'zh-CN': {
+          q: '你的问题只是“待续写的文字”：模型不会因为这是一个问题，就先去查证事实。',
+          tokens: '切成 Token：专名和代码常常被切碎；切法不同，先验就不同。',
+          score: '打分：根据到目前为止的所有 Token，给词表里每一个可能的下一 Token 打分。',
+          sample: '抽样接上：按概率抽样或取最高，把抽到的 Token 接在后面。',
+          loop: '继续预测：用新的上下文重复，直到停下。流畅，就是这样一段一段续出来的。'
+        },
+        'zh-TW': {
+          q: '你的問題只是「待續寫的文字」：模型不會因為這是一個問題，就先去查證事實。',
+          tokens: '切成 Token：專名和程式碼常常被切碎；切法不同，先驗就不同。',
+          score: '打分：根據到目前為止的所有 Token，給詞表裡每一個可能的下一 Token 打分。',
+          sample: '抽樣接上：按機率抽樣或取最高，把抽到的 Token 接在後面。',
+          loop: '繼續預測：用新的上下文重複，直到停下。流暢，就是這樣一段一段續出來的。'
+        },
+        en: {
+          q: 'Your question is just “text waiting to be continued.” Being a question does not make the model check facts first.',
+          tokens: 'Cut into tokens: proper names and code are often chopped up; different splits carry different priors.',
+          score: 'Scoring: based on every token so far, the model scores every possible next token in its vocabulary.',
+          sample: 'Sampling: it samples by probability (or takes the top) and appends that token.',
+          loop: 'Loop: predict the next token with the new context until it stops. Fluency is continued one piece at a time.'
+        }
+      };
+      const w2DemoLabels = {
+        'zh-CN': [['01 / 中性问题', '2 + 2 等于几？', '请只回答数字'], ['02 / 带错误立场', '“我认为 7709.HK 就是普洛斯”', '请确认我的理解并补充两点投资要点'], ['03 / 追问确认', '你确定吗？', '只追问，不给新信息']],
+        'zh-TW': [['01 / 中性問題', '2 + 2 等於幾？', '請只回答數字'], ['02 / 帶錯誤立場', '「我認為 7709.HK 就是普洛斯」', '請確認我的理解並補充兩點投資要點'], ['03 / 追問確認', '你確定嗎？', '只追問，不給新資訊']],
+        en: [['01 / Neutral', '“What is 2 + 2?”', 'answer with the number only'], ['02 / Wrong stance', '“I think 7709.HK is GLP.”', 'confirm my view and add two investment points'], ['03 / Follow-up', '“Are you sure?”', 'just a nudge, no new information']]
+      };
+      const w2DemoCopy = {
+        'zh-CN': {
+          1: '第一问：中性问题，正确概率主导，答案稳定。',
+          2: '第二问：错误立场进入上下文，用户认可概率开始压过事实概率，回答容易附和或软附和。',
+          3: '第三问：一句“你确定吗”就可能让整段改口。语气变化不是核验，要对照的是交易所事实。'
+        },
+        'zh-TW': {
+          1: '第一問：中性問題，正確機率主導，答案穩定。',
+          2: '第二問：錯誤立場進入上下文，使用者認可機率開始壓過事實機率，回答容易附和或軟附和。',
+          3: '第三問：一句「你確定嗎」就可能讓整段改口。語氣變化不是核驗，要對照的是交易所事實。'
+        },
+        en: {
+          1: 'Question 1: a neutral question—correctness dominates and the answer is stable.',
+          2: 'Question 2: the wrong stance enters the context; approval odds start to outweigh correctness—expect agreement or soft agreement.',
+          3: 'Question 3: one “are you sure?” can flip the whole answer. A tone change is not verification—compare against the exchange’s facts.'
+        }
+      };
+      function applyW2Tables(lang) {
+        const set = w2Tables[lang] || w2Tables['zh-CN'];
+        const map = { cut: 'w2-cut-table', reward: 'w2-reward-table', behavior: 'w2-behavior-table', shots: 'w2-shots-table' };
+        Object.entries(map).forEach(([key, id]) => {
+          const def = set[key];
+          const table = document.getElementById(id)?.querySelector('table');
+          if (!table || !def) return;
+          table.querySelectorAll('thead th').forEach((cell, index) => { if (def.head[index] != null) cell.textContent = def.head[index]; });
+          table.querySelectorAll('tbody tr').forEach((row, rowIndex) => {
+            def.rows[rowIndex]?.forEach((value, cellIndex) => { if (row.cells[cellIndex]) row.cells[cellIndex].innerHTML = value; });
+          });
+        });
+      }
+      function applyWeek2Language(lang) {
+        const copy = week2Copy[lang] || week2Copy['zh-CN'];
+        document.querySelectorAll('#week2Panel [data-w2]').forEach(element => {
+          const value = copy[element.dataset.w2];
+          if (value == null) return;
+          element[w2HtmlKeys.has(element.dataset.w2) ? 'innerHTML' : 'textContent'] = value;
+        });
+        document.querySelectorAll('#navWeek2 .nav-link[data-w2-nav]').forEach(link => {
+          const value = copy[link.dataset.w2Nav];
+          if (value == null) return;
+          const textNode = [...link.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+          if (textNode) textNode.nodeValue = value;
+        });
+        const rail = document.getElementById('railWeek2');
+        if (rail) {
+          const railTitle = rail.querySelector('.rail-title');
+          const railTip = rail.querySelector('.rail-tip');
+          const railKicker = rail.querySelector('.rail-kicker');
+          if (railKicker) railKicker.textContent = copy.railKicker;
+          if (railTitle) railTitle.textContent = copy.railTitle;
+          if (railTip) railTip.textContent = copy.railTip;
+          rail.querySelectorAll('.rail-list li a span:last-child').forEach((item, index) => {
+            const value = [copy.rail1, copy.rail2, copy.rail3][index];
+            if (value) item.textContent = value;
+          });
+        }
+        document.querySelectorAll('#week2Panel .layer-node').forEach((node, index) => {
+          const values = (w2LayerLabels[lang] || w2LayerLabels['zh-CN'])[index];
+          if (!values) return;
+          const parts = [node.querySelector('.layer-index'), node.querySelector('strong'), node.querySelector('small')];
+          parts.forEach((part, partIndex) => { if (part) part.textContent = values[partIndex]; });
+        });
+        const activeW2Layer = document.querySelector('#week2Panel .layer-node.is-active');
+        const w2LayerDetail = document.getElementById('w2LayerDetail');
+        if (activeW2Layer && w2LayerDetail && w2LayerCopy[lang]) w2LayerDetail.textContent = w2LayerCopy[lang][activeW2Layer.dataset.w2Layer];
+        document.querySelectorAll('#week2Panel .demo-step').forEach((step, index) => {
+          const values = (w2DemoLabels[lang] || w2DemoLabels['zh-CN'])[index];
+          if (!values) return;
+          const parts = [step.querySelector('.step-no'), step.querySelector('strong'), step.querySelector('small')];
+          parts.forEach((part, partIndex) => { if (part) part.textContent = values[partIndex]; });
+        });
+        const activeDemo = document.querySelector('#week2Panel .demo-step.is-active');
+        const w2DemoCaption = document.getElementById('w2DemoCaption');
+        if (activeDemo && w2DemoCaption && w2DemoCopy[lang]) w2DemoCaption.textContent = w2DemoCopy[lang][activeDemo.dataset.demoStep];
+      }
+      const w2LayerDetailEl = document.getElementById('w2LayerDetail');
+      document.querySelectorAll('#week2Panel .layer-node').forEach(node => node.addEventListener('click', () => {
+        document.querySelectorAll('#week2Panel .layer-node').forEach(item => item.classList.toggle('is-active', item === node));
+        if (w2LayerDetailEl) w2LayerDetailEl.textContent = w2LayerCopy[currentLanguage][node.dataset.w2Layer];
+      }));
+      const w2DemoCaptionEl = document.getElementById('w2DemoCaption');
+      document.querySelectorAll('#week2Panel .demo-step').forEach(step => step.addEventListener('click', () => {
+        document.querySelectorAll('#week2Panel .demo-step').forEach(item => item.classList.toggle('is-active', item === step));
+        if (w2DemoCaptionEl) w2DemoCaptionEl.textContent = w2DemoCopy[currentLanguage][step.dataset.demoStep];
+      }));
+
+      prevWeek.addEventListener('click', () => setWeek(currentWeek - 1));
+      nextWeek.addEventListener('click', () => setWeek(currentWeek + 1));
+      mobileMenu.addEventListener('click', () => {
+        const open = sidebar.classList.toggle('is-open');
+        mobileMenu.setAttribute('aria-expanded', String(open));
+      });
+      document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => {
+        if (window.matchMedia('(max-width: 760px)').matches) {
+          sidebar.classList.remove('is-open');
+          mobileMenu.setAttribute('aria-expanded', 'false');
+        }
+        setActiveSection(link.dataset.section);
+      }));
+
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      }, { rootMargin: '-20% 0px -60% 0px', threshold: [0.05, 0.25, 0.5] });
+      sectionIds.forEach(id => observer.observe(document.getElementById(id)));
+
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      const hashWeek = /^#week-(2|3|4)$/.exec(location.hash);
+      setWeek(hashWeek ? Number(hashWeek[1]) : Number(saved.week) || 3, false);
+      setActiveSection(saved.section || 'section-1');
+      languageSelect.addEventListener('change', event => applyLanguage(event.target.value));
+      applyLanguage(currentLanguage);
+    })();
+  </script>
+</body>
+</html>
