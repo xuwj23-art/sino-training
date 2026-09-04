@@ -1472,12 +1472,8 @@
         nextWeek.disabled = currentWeek === 4;
         if (writeHash) history.replaceState(null, '', `#week-${currentWeek}`);
         localStorage.setItem(storageKey, JSON.stringify({ week: currentWeek, section: localStorage.getItem(`${storageKey}-section`) || 'section-1' }));
-        const ids = weekSectionMap[currentWeek];
-        if (ids) {
-          const stored = localStorage.getItem(`${storageKey}-section`);
-          const storedElement = stored ? document.getElementById(stored) : null;
-          setActiveSection(storedElement && storedElement.closest(`#week${currentWeek}Panel`) ? stored : ids[0]);
-        }
+        lastSyncedSection = null;
+        syncSectionFromScroll();
         document.title = currentLanguage === 'en'
           ? `Prompt Structure · Week ${currentWeek}`
           : currentLanguage === 'zh-TW'
@@ -1564,7 +1560,6 @@
       const week2SectionIds = ['w2-s1', 'w2-s2', 'w2-s3', 'w2-s4', 'w2-s5', 'w2-s6', 'w2-s7', 'w2-s8'];
       const week3SectionIds = ['section-1', 'section-2', 'section-4', 'section-5', 'section-6'];
       const weekSectionMap = { 2: week2SectionIds, 3: week3SectionIds };
-      const sectionIds = [...week3SectionIds, ...week2SectionIds];
 
       const w2HtmlKeys = new Set(['title', 'shot1Cap', 'shot2Cap', 'shot3Cap', 'shot4Cap']);
       const week2Copy = {
@@ -1809,19 +1804,53 @@
           sidebar.classList.remove('is-open');
           mobileMenu.setAttribute('aria-expanded', 'false');
         }
+        lastSyncedSection = link.dataset.section;
         setActiveSection(link.dataset.section);
       }));
 
-      const observer = new IntersectionObserver(entries => {
-        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActiveSection(visible.target.id);
-      }, { rootMargin: '-20% 0px -60% 0px', threshold: [0.05, 0.25, 0.5] });
-      sectionIds.forEach(id => observer.observe(document.getElementById(id)));
+      /* Scroll-position sync. The previous IntersectionObserver missed very tall sections
+         (e.g. section 03): their intersection ratio inside the 20%-40% viewport band never
+         crossed a threshold, so when the previous section left the band the callback got no
+         intersecting entry and the sidebar stayed stuck. Deriving the section from the scroll
+         anchor is deterministic and also keeps sub-sections (3.1-3.5, 5.1-5.3) in sync. */
+      const weekSubMap = { 2: ['w2-m1', 'w2-m2', 'w2-m3'], 3: ['role', 'context', 'task', 'format', 'example'] };
+      let lastSyncedSection = null;
+      function syncSectionFromScroll() {
+        const mainIds = weekSectionMap[currentWeek];
+        if (!mainIds) return;
+        const anchor = window.innerHeight * 0.3;
+        let activeMain = mainIds[0];
+        mainIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && el.getBoundingClientRect().top <= anchor) activeMain = id;
+        });
+        let activeSub = null;
+        (weekSubMap[currentWeek] || []).forEach(id => {
+          const el = document.getElementById(id);
+          if (el && el.closest(`#${activeMain}`) && el.getBoundingClientRect().top <= anchor) activeSub = id;
+        });
+        const id = activeSub || activeMain;
+        if (id !== lastSyncedSection) {
+          lastSyncedSection = id;
+          setActiveSection(id);
+        }
+      }
+      let scrollSyncQueued = false;
+      function requestScrollSync() {
+        // scroll events are already frame-aligned; run directly instead of deferring via
+        // requestAnimationFrame, which can be starved in inactive/occluded windows.
+        if (scrollSyncQueued) return;
+        scrollSyncQueued = true;
+        window.setTimeout(() => { scrollSyncQueued = false; syncSectionFromScroll(); }, 0);
+      }
+      window.addEventListener('scroll', requestScrollSync, { passive: true });
+      window.addEventListener('resize', requestScrollSync, { passive: true });
 
       const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
       const hashWeek = /^#week-(2|3|4)$/.exec(location.hash);
       setWeek(hashWeek ? Number(hashWeek[1]) : Number(saved.week) || 3, false);
-      setActiveSection(saved.section || 'section-1');
+      syncSectionFromScroll();
+      window.addEventListener('load', requestScrollSync);
       languageSelect.addEventListener('change', event => applyLanguage(event.target.value));
       applyLanguage(currentLanguage);
     })();
