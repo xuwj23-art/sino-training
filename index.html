@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-TW">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AI 培训站：Week 2《AI 能力是概率性的》与 Week 3《Prompt 结构学 · 五要素指令法》学习页面">
-  <title>Prompt 结构学 · Week 3</title>
+  <meta name="description" content="AI 培訓站：Week 2《AI 能力是機率性的》與 Week 3《Prompt 結構學 · 五要素指令法》學習頁面">
+  <title>Prompt 結構學 · Week 2</title>
   <style>
     :root {
       --bg: oklch(97% 0.012 82);
@@ -132,7 +132,7 @@
     }
     .side-progress { margin: 0 0 24px; color: var(--muted); font-size: 12px; }
     .progress-track { height: 3px; margin-top: 10px; overflow: hidden; border-radius: 8px; background: var(--border); }
-    .progress-fill { width: 20%; height: 100%; background: var(--accent); transition: width 240ms ease; }
+    .progress-fill { width: 12.5%; height: 100%; background: var(--accent); transition: width 240ms ease; }
     .nav-list, .nav-sublist { display: grid; gap: 3px; margin: 0; padding: 0; list-style: none; }
     .nav-sublist { margin: 4px 0 12px 16px; }
     .nav-link {
@@ -402,7 +402,7 @@
       </div>
       <div class="week-stepper" data-od-id="week-stepper" aria-label="周次切换">
         <button class="step-btn" id="prevWeek" data-od-id="prev-week" type="button" aria-label="切换到上一周">←</button>
-        <div class="step-current" aria-live="polite"><strong id="weekLabel">WEEK 3</strong><span id="weekTitle">五要素指令法</span></div>
+        <div class="step-current" aria-live="polite"><strong id="weekLabel">WEEK 2</strong><span id="weekTitle">AI 能力是機率性的</span></div>
         <button class="step-btn" id="nextWeek" data-od-id="next-week" type="button" aria-label="切换到下一周">→</button>
       </div>
       <label class="language-switcher" for="languageSelect">
@@ -418,12 +418,12 @@
     <div class="workspace">
       <aside class="sidebar" id="sidebar" data-od-id="sidebar">
         <p class="sidebar-kicker">本周导览</p>
-        <p class="side-progress"><span id="progressLabel">1 / 5</span> · 阅读进度</p>
+        <p class="side-progress"><span id="progressLabel">1 / 8</span> · 阅读进度</p>
         <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
         <nav aria-label="章节导航">
-          <div class="nav-week" id="navWeek3" data-nav-week="3">
+          <div class="nav-week" id="navWeek3" data-nav-week="3" hidden>
             <ul class="nav-list">
-              <li><a class="nav-link is-active" href="#section-1" data-section="section-1"><small>01</small>从「问问题」到「下指令」</a></li>
+              <li><a class="nav-link" href="#section-1" data-section="section-1"><small>01</small>从「问问题」到「下指令」</a></li>
               <li><a class="nav-link" href="#section-2" data-section="section-2"><small>02</small>指令层级</a></li>
               <li>
                 <a class="nav-link" href="#section-4" data-section="section-4"><small>03</small>五要素详解</a>
@@ -439,9 +439,9 @@
               <li><a class="nav-link" href="#section-6" data-section="section-6"><small>05</small>小结</a></li>
             </ul>
           </div>
-          <div class="nav-week" id="navWeek2" data-nav-week="2" hidden>
+          <div class="nav-week" id="navWeek2" data-nav-week="2">
             <ul class="nav-list">
-              <li><a class="nav-link" href="#w2-s1" data-section="w2-s1" data-w2-nav="nav1"><small>01</small>什么是 Token</a></li>
+              <li><a class="nav-link is-active" href="#w2-s1" data-section="w2-s1" data-w2-nav="nav1"><small>01</small>什么是 Token</a></li>
               <li><a class="nav-link" href="#w2-s2" data-section="w2-s2" data-w2-nav="nav2"><small>02</small>SharpPoint vs SharePoint</a></li>
               <li><a class="nav-link" href="#w2-s3" data-section="w2-s3" data-w2-nav="nav3"><small>03</small>下一 Token 概率预测</a></li>
               <li><a class="nav-link" href="#w2-s4" data-section="w2-s4" data-w2-nav="nav4"><small>04</small>幻觉、谄媚、从不说不知道</a></li>
@@ -462,7 +462,7 @@
       </aside>
 
       <main class="main-column" id="content" data-od-id="main-content">
-        <div id="week3Panel" class="week-panel is-visible" data-week="3">
+        <div id="week3Panel" class="week-panel" data-week="3">
           <section class="hero" data-od-id="hero">
             <div class="hero-grid">
               <div>
@@ -793,7 +793,7 @@
           <footer class="footer" data-od-id="footer">Prompt 结构学 · Week 3 · 依据原始 Markdown 编排，并补充易读说明。</footer>
         </div>
 
-        <div id="week2Panel" class="week-panel" data-week="2" data-od-id="week2-panel">
+        <div id="week2Panel" class="week-panel is-visible" data-week="2" data-od-id="week2-panel">
           <section class="hero" data-od-id="w2-hero">
             <div class="hero-grid">
               <div>
@@ -1060,7 +1060,7 @@
       </main>
 
       <aside class="rail" data-od-id="right-rail">
-        <div class="rail-card" id="railWeek3" data-rail-week="3">
+        <div class="rail-card is-hidden" id="railWeek3" data-rail-week="3">
           <p class="rail-kicker">阅读提示</p>
           <h2 class="rail-title">把结构读成动作</h2>
           <ul class="rail-list">
@@ -1071,7 +1071,7 @@
           <div class="rail-divider"></div>
           <p class="rail-tip">阅读进度会保存在本地，下次打开可从上次所在章节继续。</p>
         </div>
-        <div class="rail-card is-hidden" id="railWeek2" data-rail-week="2">
+        <div class="rail-card" id="railWeek2" data-rail-week="2">
           <p class="rail-kicker" data-w2="railKicker">阅读提示</p>
           <h2 class="rail-title" data-w2="railTitle">把概率读成风险</h2>
           <ul class="rail-list">
@@ -1108,7 +1108,7 @@
       const languageKey = 'prompt-structure-week3-language';
       const savedLanguage = localStorage.getItem(languageKey);
       const requestedLanguage = new URLSearchParams(location.search).get('lang');
-      let currentLanguage = ['zh-CN', 'zh-TW', 'en'].includes(requestedLanguage) ? requestedLanguage : ['zh-CN', 'zh-TW', 'en'].includes(savedLanguage) ? savedLanguage : 'zh-CN';
+      let currentLanguage = ['zh-CN', 'zh-TW', 'en'].includes(requestedLanguage) ? requestedLanguage : ['zh-CN', 'zh-TW', 'en'].includes(savedLanguage) ? savedLanguage : 'zh-TW';
       const weekNames = {
         'zh-CN': { 2: 'AI 能力是概率性的', 3: '五要素指令法', 4: '下一周 · 待插入' },
         'zh-TW': { 2: 'AI 能力是機率性的', 3: '五要素指令法', 4: '下一週 · 待插入' },
@@ -1848,7 +1848,7 @@
 
       const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
       const hashWeek = /^#week-(2|3|4)$/.exec(location.hash);
-      setWeek(hashWeek ? Number(hashWeek[1]) : Number(saved.week) || 3, false);
+      setWeek(hashWeek ? Number(hashWeek[1]) : Number(saved.week) || 2, false);
       syncSectionFromScroll();
       window.addEventListener('load', requestScrollSync);
       languageSelect.addEventListener('change', event => applyLanguage(event.target.value));
