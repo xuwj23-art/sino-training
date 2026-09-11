@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AI 培訓站：Week 2《AI 能力是機率性的》與 Week 3《Prompt 結構學 · 五要素指令法》學習頁面">
+  <meta name="description" content="AI 培訓站：Week 2 AI 能力、Week 3 Prompt 結構學、Week 4 Grok SOP Prompt 實操工作坊">
   <title>Prompt 結構學 · Week 2</title>
   <style>
     :root {
@@ -391,6 +391,7 @@
       *, *::before, *::after { transition-duration: 0.01ms !important; }
     }
   </style>
+  <link rel="stylesheet" href="week4/lesson.css">
 </head>
 <body>
   <div class="app-shell">
@@ -456,6 +457,18 @@
               <li><a class="nav-link" href="#w2-s6" data-section="w2-s6" data-w2-nav="nav6"><small>06</small>四张截图对照</a></li>
               <li><a class="nav-link" href="#w2-s7" data-section="w2-s7" data-w2-nav="nav7"><small>07</small>演示</a></li>
               <li><a class="nav-link" href="#w2-s8" data-section="w2-s8" data-w2-nav="nav8"><small>08</small>引用与出处</a></li>
+            </ul>
+          </div>
+          <div class="nav-week" id="navWeek4" data-nav-week="4" data-w4-owned hidden>
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#w4-s1" data-section="w4-s1"><small>01</small><span data-w4-nav-label="nav1"></span></a></li>
+              <li><a class="nav-link" href="#w4-s2" data-section="w4-s2"><small>02</small><span data-w4-nav-label="nav2"></span></a></li>
+              <li><a class="nav-link" href="#w4-s3" data-section="w4-s3"><small>03</small><span data-w4-nav-label="nav3"></span></a></li>
+              <li><a class="nav-link" href="#w4-s4" data-section="w4-s4"><small>04</small><span data-w4-nav-label="nav4"></span></a></li>
+              <li><a class="nav-link" href="#w4-s5" data-section="w4-s5"><small>05</small><span data-w4-nav-label="nav5"></span></a></li>
+              <li><a class="nav-link" href="#w4-s6" data-section="w4-s6"><small>06</small><span data-w4-nav-label="nav6"></span></a></li>
+              <li><a class="nav-link" href="#w4-s7" data-section="w4-s7"><small>07</small><span data-w4-nav-label="nav7"></span></a></li>
+              <li><a class="nav-link" href="#w4-s8" data-section="w4-s8"><small>08</small><span data-w4-nav-label="nav8"></span></a></li>
             </ul>
           </div>
         </nav>
@@ -1051,12 +1064,7 @@
           </section>
           <footer class="footer" data-od-id="w2-footer" data-w2="footer">AI 能力是概率性的 · Week 2 · 依据 week2_training.pdf 编排，四张截图取自原讲义。</footer>
         </div>
-        <div id="week4Panel" class="week-panel" data-week="4" data-od-id="week4-panel">
-          <p class="eyebrow">Week 4</p>
-          <h2>下一周内容尚未插入</h2>
-          <p>步进器已预留下一周入口。插入 Week 4 文档后，可继续使用同一套左侧导航和周次切换。</p>
-          <div class="panel-note">当前显示的是结构占位，不包含虚构课程内容。</div>
-        </div>
+        <div id="week4Panel" class="week-panel" data-week="4" data-w4-owned data-od-id="week4-panel"></div>
       </main>
 
       <aside class="rail" data-od-id="right-rail">
@@ -1082,10 +1090,25 @@
           <div class="rail-divider"></div>
           <p class="rail-tip" data-w2="railTip">阅读进度会保存在本地，下次打开可从上次所在章节继续。</p>
         </div>
+        <div class="rail-card is-hidden" id="railWeek4" data-rail-week="4" data-w4-owned>
+          <p class="rail-kicker" data-w4-rail="railKicker"></p>
+          <h2 class="rail-title" data-w4-rail="railTitle"></h2>
+          <ul class="rail-list">
+            <li><a href="#w4-s3"><span class="rail-index">01</span><span data-w4-rail="rail1"></span></a></li>
+            <li><a href="#w4-s4"><span class="rail-index">02</span><span data-w4-rail="rail2"></span></a></li>
+            <li><a href="#w4-s5"><span class="rail-index">03</span><span data-w4-rail="rail3"></span></a></li>
+            <li><a href="#w4-s6"><span class="rail-index">04</span><span data-w4-rail="rail4"></span></a></li>
+          </ul>
+          <div class="rail-divider"></div>
+          <p class="rail-tip" data-w4-rail="railTip"></p>
+          <p class="w4-rail-platform" data-w4-rail="railPlatform"></p>
+        </div>
       </aside>
     </div>
   </div>
 
+  <script src="week4/course-data.js"></script>
+  <script src="week4/lesson.js"></script>
   <script>
     (() => {
       const panels = { 2: document.getElementById('week2Panel'), 3: document.getElementById('week3Panel'), 4: document.getElementById('week4Panel') };
@@ -1110,9 +1133,9 @@
       const requestedLanguage = new URLSearchParams(location.search).get('lang');
       let currentLanguage = ['zh-CN', 'zh-TW', 'en'].includes(requestedLanguage) ? requestedLanguage : ['zh-CN', 'zh-TW', 'en'].includes(savedLanguage) ? savedLanguage : 'zh-TW';
       const weekNames = {
-        'zh-CN': { 2: 'AI 能力是概率性的', 3: '五要素指令法', 4: '下一周 · 待插入' },
-        'zh-TW': { 2: 'AI 能力是機率性的', 3: '五要素指令法', 4: '下一週 · 待插入' },
-        en: { 2: 'Probabilistic AI', 3: 'Five-part prompting', 4: 'Next week · Coming soon' }
+        'zh-CN': { 2: 'AI 能力是概率性的', 3: '五要素指令法', 4: '先问清楚，再写 Prompt' },
+        'zh-TW': { 2: 'AI 能力是機率性的', 3: '五要素指令法', 4: '先問清楚，再寫 Prompt' },
+        en: { 2: 'Probabilistic AI', 3: 'Five-part prompting', 4: 'Ask first, then prompt' }
       };
       const storageKey = 'prompt-structure-week3-state';
       let currentWeek = 3;
@@ -1230,9 +1253,9 @@
       };
       const baseTextNodes = new Map();
       const baseElementHTML = new Map();
-      document.querySelectorAll('p,h1,h2,h3,h4,strong,small,span,th,td,li,pre,blockquote,option,.footer,.panel-note').forEach(element => baseElementHTML.set(element, element.innerHTML));
+      document.querySelectorAll('p,h1,h2,h3,h4,strong,small,span,th,td,li,pre,blockquote,option,.footer,.panel-note').forEach(element => { if (!element.closest('[data-w4-owned]')) baseElementHTML.set(element, element.innerHTML); });
       const baseWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-        acceptNode: node => node.parentElement?.closest('script,style') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+        acceptNode: node => node.parentElement?.closest('script,style,[data-w4-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
       });
       let baseNode;
       while ((baseNode = baseWalker.nextNode())) baseTextNodes.set(baseNode, baseNode.nodeValue);
@@ -1244,7 +1267,7 @@
         baseTextNodes.forEach((value, node) => { if (node.isConnected) node.nodeValue = value; });
       }
       function convertRemainingTraditional() {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,[data-w4-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
         let node;
          while ((node = walker.nextNode())) {
            node.nodeValue = [...node.nodeValue].map(char => traditionalPairs[char] || char).join('');
@@ -1261,7 +1284,7 @@
         '输出': 'Output', '可检查性': 'Checkability', '缺件': 'Missing items', '看输出时只标四件事：': 'When checking the output, look for four things:', '成功的失败': 'a useful failure'
       };
       function translateEnglishPhrases() {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,pre') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,pre,[data-w4-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
         let node;
         while ((node = walker.nextNode())) {
           const trimmed = node.nodeValue.trim();
@@ -1336,9 +1359,6 @@
         ['[data-od-id="summary-table"] thead th', ['Point', 'In one sentence']],
         ['[data-od-id="summary-table"] tbody td', ['Why it makes things up', 'A continuation machine trained to deliver something that looks satisfying as quickly as possible', 'How to prevent it', 'Fill the five slots so “done” can be checked', 'Role', 'Makes the model sound like a screening assistant, but cannot replace the material', 'Context', 'Puts company facts in this conversation; a knowledge base just does this automatically', 'Task', 'Write the acceptance checks first, then do one thing so the model does not jump to a conclusion', 'Format', 'Lets a program extract fields and feed an automated workflow', 'Example', 'Fixes the output with the checks and test process', 'Hierarchy', 'User has lower priority, but decides what this ticket does and what it uses', 'When it goes wrong', 'Do not keep asking “are you sure”; edit the prompt, start a new chat, and run it again']],
         ['.footer', 'Prompt Structure · Week 3 · Arranged from the source Markdown with plain-language notes.', false],
-        ['#week4Panel h2', 'Next week content is not inserted yet', false],
-        ['#week4Panel > p:not(.eyebrow)', 'The stepper reserves a next-week entry. Once the Week 4 document is added, the same left navigation and week switcher can continue.', false],
-        ['#week4Panel .panel-note', 'This is a structural placeholder; it does not contain invented course content.', false],
         ['.language-switcher .sr-only', 'Language', false],
         ['#languageSelect option', ['Simplified Chinese', 'Traditional Chinese', 'English']]
       ];
@@ -1434,6 +1454,8 @@
         if (currentLanguage === 'en') applyEnglishContent();
         applyW2Tables(currentLanguage);
         applyWeek2Language(currentLanguage);
+        window.Week4Lesson?.render(currentLanguage);
+        syncSectionFromScroll();
         languageSelect.querySelectorAll('option').forEach((option, index) => { if (languageOptions[index]) option.textContent = languageOptions[index]; });
         localStorage.setItem(languageKey, currentLanguage);
       }
@@ -1463,6 +1485,7 @@
 
       function setWeek(week, writeHash = true) {
         currentWeek = Math.max(2, Math.min(4, week));
+        document.documentElement.dataset.week = String(currentWeek);
         Object.entries(panels).forEach(([key, panel]) => panel.classList.toggle('is-visible', Number(key) === currentWeek));
         document.querySelectorAll('.nav-week').forEach(nav => nav.toggleAttribute('hidden', nav.dataset.navWeek !== String(currentWeek)));
         document.querySelectorAll('.rail-card').forEach(card => card.classList.toggle('is-hidden', card.dataset.railWeek !== String(currentWeek)));
@@ -1470,7 +1493,7 @@
         weekTitle.textContent = weekNames[currentLanguage][currentWeek];
         prevWeek.disabled = currentWeek === 2;
         nextWeek.disabled = currentWeek === 4;
-        if (writeHash) history.replaceState(null, '', `#week-${currentWeek}`);
+        if (writeHash) { history.replaceState(null, '', `#week-${currentWeek}`); window.scrollTo({ top: 0, behavior: 'instant' }); }
         localStorage.setItem(storageKey, JSON.stringify({ week: currentWeek, section: localStorage.getItem(`${storageKey}-section`) || 'section-1' }));
         lastSyncedSection = null;
         syncSectionFromScroll();
@@ -1559,7 +1582,8 @@
       /* ===== Week 2 content, navigation and interactions ===== */
       const week2SectionIds = ['w2-s1', 'w2-s2', 'w2-s3', 'w2-s4', 'w2-s5', 'w2-s6', 'w2-s7', 'w2-s8'];
       const week3SectionIds = ['section-1', 'section-2', 'section-4', 'section-5', 'section-6'];
-      const weekSectionMap = { 2: week2SectionIds, 3: week3SectionIds };
+      const week4SectionIds = ['w4-s1', 'w4-s2', 'w4-s3', 'w4-s4', 'w4-s5', 'w4-s6', 'w4-s7', 'w4-s8'];
+      const weekSectionMap = { 2: week2SectionIds, 3: week3SectionIds, 4: week4SectionIds };
 
       const w2HtmlKeys = new Set(['title', 'shot1Cap', 'shot2Cap', 'shot3Cap', 'shot4Cap']);
       const week2Copy = {
@@ -1848,11 +1872,24 @@
 
       const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
       const hashWeek = /^#week-(2|3|4)$/.exec(location.hash);
-      setWeek(hashWeek ? Number(hashWeek[1]) : Number(saved.week) || 2, false);
+      const hashSectionWeek = /^#w4-s/.test(location.hash) ? 4 : /^#w2-/.test(location.hash) ? 2 : /^(#section-|#role$|#context$|#task$|#format$|#example$)/.test(location.hash) ? 3 : null;
+      setWeek(hashWeek ? Number(hashWeek[1]) : hashSectionWeek || Number(saved.week) || 2, false);
       syncSectionFromScroll();
       window.addEventListener('load', requestScrollSync);
       languageSelect.addEventListener('change', event => applyLanguage(event.target.value));
       applyLanguage(currentLanguage);
+      function followSectionHash() {
+        const explicitWeek = /^#week-(2|3|4)$/.exec(location.hash);
+        if (explicitWeek) { setWeek(Number(explicitWeek[1]), false); window.scrollTo({top:0,behavior:'instant'}); return; }
+        const target = document.getElementById(location.hash.slice(1));
+        const targetWeek = Number(target?.closest('[data-week]')?.dataset.week);
+        if (!target || !targetWeek) return;
+        if (targetWeek !== currentWeek) setWeek(targetWeek, false);
+        target.scrollIntoView({behavior:'instant',block:'start'});
+        setActiveSection(target.id);
+      }
+      window.addEventListener('hashchange', followSectionHash);
+      if (hashSectionWeek) followSectionHash();
     })();
   </script>
 </body>
