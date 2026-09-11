@@ -58,6 +58,24 @@
       <div class="w4-checklist">${Array.from({length: 6}, (_, i) => `<label class="w4-check-row"><input type="checkbox" data-w4-check="${i}" ${checked.has(i) ? 'checked' : ''}><span>${esc(t(`check${i + 1}`))}</span></label>`).join('')}</div>
       <div class="w4-check-footer"><button type="button" class="w4-text-button" data-w4-reset>${esc(t('reset'))}</button></div>`;
   }
+  function simulatedRevision() {
+    return `<p class="w4-sim-label">${esc(t('simLabel'))}</p>
+      <div class="w4-sim-case"><h3>${esc(t('simCaseTitle'))}</h3><p>${esc(t('simCase'))}</p></div>
+      <div class="w4-sim-step" id="w4-sim-old"><h3>${esc(t('sim1Title'))}</h3>
+        <div class="w4-sim-reply"><p class="w4-sim-speaker">${esc(t('simAI'))}</p>
+          <div class="table-wrap w4-sim-table"><table><thead><tr><th scope="col">${esc(t('simStepHead'))}</th><th scope="col">${esc(t('simActionHead'))}</th></tr></thead><tbody>${[1,2,3].map(i=>`<tr${i===3?' class="w4-sim-error-row"':''}><th scope="row">0${i}</th><td>${esc(t(`simBad${i}`))}</td></tr>`).join('')}</tbody></table></div>
+        </div><p class="w4-sim-diagnosis">${esc(t('simProblem'))}</p>
+      </div>
+      <div class="w4-sim-step" id="w4-sim-feedback"><h3>${esc(t('sim2Title'))}</h3><p>${esc(t('sim2Intro'))}</p>${codeBlock('feedback','w4-feedback')}</div>
+      <div class="w4-sim-step" id="w4-sim-coach"><h3>${esc(t('sim3Title'))}</h3>
+        <div class="w4-sim-reply"><p class="w4-sim-speaker">${esc(t('simAI'))}</p><p>${esc(t('simCoach'))}</p><ol>${[1,2,3].map(i=>`<li>${esc(t(`simRule${i}`))}</li>`).join('')}</ol></div>
+        <details class="w4-details" id="w4-sim-prompt-details"><summary>${esc(t('simPromptTitle'))}</summary><p class="w4-small">${esc(t('simPromptNote'))}</p>${codeBlock('simPrompt','w4-sim-prompt')}</details>
+      </div>
+      <div class="w4-sim-step" id="w4-sim-result"><h3>${esc(t('sim4Title'))}</h3><p>${esc(t('sim4Intro'))}</p>
+        <div class="w4-sim-reply"><p class="w4-sim-speaker">${esc(t('simAI'))}</p><div class="table-wrap w4-sim-table w4-sim-results"><table><thead><tr><th scope="col">${esc(t('simResultHead1'))}</th><th scope="col">${esc(t('simResultHead2'))}</th></tr></thead><tbody>${['Pending','Accepted'].map(key=>`<tr><th scope="row">${esc(t(`sim${key}`))}</th><td>${esc(t(`sim${key}Result`))}</td></tr>`).join('')}</tbody></table></div></div>
+        <div class="w4-sim-try"><h4>${esc(t('simTryTitle'))}</h4><p>${esc(t('simTry'))}</p></div>
+      </div>`;
+  }
   function render(lang) {
     language = data.copy[lang] ? lang : 'zh-CN';
     panel.innerHTML = `
@@ -89,10 +107,7 @@
         <div id="w4-check-panel" class="w4-check-panel">${checklist()}</div>
       </section>
       <section id="w4-s6" class="article-section prose"><h2>${esc(t('s6'))}</h2><p class="section-intro">${esc(t('s6Intro'))}</p>
-        <h3>${esc(t('revisionTitle'))}</h3><ol class="w4-chat-flow">${[1,2,3,4].map(i=>`<li><strong>${esc(t(`revision${i}Title`))}</strong><p>${esc(t(`revision${i}`))}</p></li>`).join('')}</ol>
-        <div class="w4-error-fixture"><p class="eyebrow">${esc(t('fixtureLabel'))}</p><p>${esc(t('fixturePurpose'))}</p><blockquote>${esc(t('fixtureText'))}</blockquote><ul>${[1,2].map(i=>`<li>${esc(t(`fixtureError${i}`))}</li>`).join('')}</ul></div>
-        <p>${esc(t('fixtureUse'))}</p><h3>${esc(t('feedbackTitle'))}</h3>${codeBlock('feedback','w4-feedback')}
-        <h3>${esc(t('rerunTitle'))}</h3><p>${esc(t('rerun'))}</p>
+        ${simulatedRevision()}
       </section>
       <section id="w4-s7" class="article-section prose"><h2>${esc(t('s7'))}</h2><p class="section-intro">${esc(t('s7Intro'))}</p><div class="table-wrap w4-scenarios"><table><thead><tr>${[1,2,3].map(i=>`<th>${esc(t(`scenarioHead${i}`))}</th>`).join('')}</tr></thead><tbody>${[1,2,3,4].map(i=>`<tr><td>${esc(t(`scenario${i}a`))}</td><td>${esc(t(`scenario${i}b`))}</td><td>${esc(t(`scenario${i}c`))}</td></tr>`).join('')}</tbody></table></div><p class="w4-small">${external(sources.r4,'Kingston · '+t('scenario1a'))} · ${external(sources.r3,'PF Group · 2022 · pp. 17, 30')}</p><div class="callout"><p>${esc(t('homework'))}</p></div></section>
       <section id="w4-s8" class="article-section prose"><h2>${esc(t('s8'))}</h2><p class="section-intro">${esc(t('materialsIntro'))}</p><div class="w4-actions">${download('week4-learner-pack.zip','downloadPack',true)}</div>

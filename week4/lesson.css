@@ -79,12 +79,30 @@
 .w4-check-row:has(input:checked) span { color:var(--good); }
 .w4-check-footer { display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap; }
 .w4-text-button { border:0;padding:5px 0;color:var(--muted);background:transparent;text-decoration:underline;text-underline-offset:4px;font-size:12px;cursor:pointer; }
-.w4-error-fixture { margin:30px 0;padding:24px;border:1px dashed var(--warn);border-radius:8px; }
-#week4Panel .w4-chat-flow { padding-left:24px; }
-#week4Panel .w4-chat-flow li { margin:20px 0;padding-left:6px; }
-.w4-chat-flow li::marker { color:var(--accent);font-family:var(--mono); }
-#week4Panel .w4-chat-flow p { margin:6px 0 0;color:var(--muted);font-size:15px; }
-#week4Panel .w4-error-fixture blockquote { background:transparent;border:0;padding:0;margin:14px 0;font-size:24px;line-height:1.6;color:var(--fg);font-family:var(--display); }
+#week4Panel .w4-sim-label { margin:24px 0 16px;color:var(--muted);font-size:12px;line-height:1.8; }
+.w4-sim-case { padding:24px 26px;border-left:3px solid var(--accent);background:var(--surface); }
+#week4Panel .w4-sim-case h3 { margin:0;font-size:25px; }
+#week4Panel .w4-sim-case p { margin-bottom:0; }
+.w4-sim-step { margin-top:36px; }
+#week4Panel .w4-sim-step>h3 { margin:0 0 20px; }
+.w4-sim-reply { padding:22px 24px;border:1px solid var(--border);border-radius:8px;background:var(--surface); }
+#week4Panel .w4-sim-speaker { margin:0 0 16px;color:var(--muted);font-size:12px; }
+.w4-sim-reply .table-wrap { margin:0; }
+.w4-sim-table table { table-layout:fixed; }
+.w4-sim-table th,.w4-sim-table td { white-space:normal;overflow-wrap:anywhere; }
+.w4-sim-table th { font-family:var(--body);letter-spacing:0;font-size:13px; }
+.w4-sim-table th:first-child { width:64px; }
+.w4-sim-table tbody th { background:transparent;color:var(--fg); }
+.w4-sim-table tr:last-child th { border-bottom:0; }
+.w4-sim-error-row { background:var(--accent-soft); }
+.w4-sim-error-row th { color:var(--accent); }
+.w4-sim-results th:first-child { width:33%; }
+.w4-sim-results tbody th { font-size:14px;font-weight:600; }
+#week4Panel .w4-sim-diagnosis { padding-left:18px;border-left:2px solid var(--accent); }
+#week4Panel .w4-sim-reply>ol { margin-bottom:0; }
+#week4Panel .w4-sim-reply>ol li+li { margin-top:14px; }
+.w4-sim-try { margin-top:24px;padding-top:20px;border-top:2px solid var(--fg); }
+#week4Panel .w4-sim-try p { margin-bottom:0; }
 .w4-scenarios { overflow-x:auto; }
 .w4-scenarios table { min-width:540px; }
 .w4-scenarios th:first-child { width:24%; }
@@ -116,7 +134,12 @@ html[lang="en"] #week4Panel h2 { font-size:38px; }
   .w4-two-notes { grid-template-columns:1fr;gap:12px; }
   #week4Panel .w4-route { grid-template-columns:repeat(4,minmax(0,1fr)); }
   .w4-route li:nth-child(5) { border-left:0;padding-left:0; }
-  .w4-source-block,.w4-scenario,.w4-check-panel,.w4-error-fixture { padding:20px 16px; }
+  .w4-source-block,.w4-scenario,.w4-check-panel,.w4-sim-case,.w4-sim-reply { padding:20px 16px; }
+  #week4Panel .w4-sim-case h3 { font-size:23px; }
+  #week4Panel .w4-sim-step>h3 { font-size:24px; }
+  .w4-sim-table th,.w4-sim-table td { padding:12px 9px; }
+  .w4-sim-table th:first-child { width:48px; }
+  .w4-sim-results th:first-child { width:34%; }
   .w4-roles th,.w4-roles td { padding:12px 9px;font-size:13px; }
   .w4-roles tbody th { font-size:13px; }
   #week4Panel .w4-demo-header h3 { font-size:23px; }
@@ -134,14 +157,14 @@ html[lang="en"] #week4Panel h2 { font-size:38px; }
   .w4-check-row { font-size:14px; }
 }
 @media(max-width:480px) {
-  .w4-roles table,.w4-roles tbody { display:block;width:100%; }
-  .w4-roles thead { position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
-  .w4-roles tbody tr { display:block;padding:18px;border-bottom:1px solid var(--border); }
-  .w4-roles tbody tr:last-child { border-bottom:0; }
-  .w4-roles tbody th,.w4-roles tbody td { display:block;width:auto;padding:0;border:0; }
-  .w4-roles tbody th:first-child { width:auto;font-size:16px; }
+  .w4-roles table,.w4-roles tbody,.w4-sim-results table,.w4-sim-results tbody { display:block;width:100%; }
+  .w4-roles thead,.w4-sim-results thead { position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
+  .w4-roles tbody tr,.w4-sim-results tbody tr { display:block;padding:18px;border-bottom:1px solid var(--border); }
+  .w4-roles tbody tr:last-child,.w4-sim-results tbody tr:last-child { border-bottom:0; }
+  .w4-roles tbody th,.w4-roles tbody td,.w4-sim-results tbody th,.w4-sim-results tbody td { display:block;width:auto;padding:0;border:0; }
+  .w4-roles tbody th:first-child,.w4-sim-results tbody th:first-child { width:auto;font-size:16px; }
   .w4-roles tbody td:nth-child(2) { margin-top:5px;color:var(--muted);font-size:13px; }
-  .w4-roles tbody td:last-child { margin-top:12px;font-size:14px; }
+  .w4-roles tbody td:last-child,.w4-sim-results tbody td:last-child { margin-top:12px;font-size:14px; }
 }
 @media print {
   #week4Panel .w4-code pre { max-height:none;overflow:visible; }
