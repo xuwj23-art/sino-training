@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AI 培訓站：Week 2 AI 能力、Week 3 Prompt 結構學、Week 4 Grok SOP Prompt 實操工作坊">
+  <meta name="description" content="AI 培訓站：Week 2 AI 能力、Week 3 Prompt 結構學、Week 4 Grok SOP 實操、Week 5 模型選擇與上下文">
   <title>Prompt 結構學 · Week 2</title>
   <style>
     :root {
@@ -392,6 +392,7 @@
     }
   </style>
   <link rel="stylesheet" href="week4/lesson.css">
+  <link rel="stylesheet" href="week5/lesson.css">
 </head>
 <body>
   <div class="app-shell">
@@ -469,6 +470,15 @@
               <li><a class="nav-link" href="#w4-s6" data-section="w4-s6"><small>06</small><span data-w4-nav-label="nav6"></span></a></li>
               <li><a class="nav-link" href="#w4-s7" data-section="w4-s7"><small>07</small><span data-w4-nav-label="nav7"></span></a></li>
               <li><a class="nav-link" href="#w4-s8" data-section="w4-s8"><small>08</small><span data-w4-nav-label="nav8"></span></a></li>
+            </ul>
+          </div>
+          <div class="nav-week" id="navWeek5" data-nav-week="5" data-w5-owned hidden>
+            <ul class="nav-list">
+              <li><a class="nav-link" href="#w5-s1" data-section="w5-s1"><small>01</small><span data-w5-nav-label="nav1"></span></a></li>
+              <li><a class="nav-link" href="#w5-s2" data-section="w5-s2"><small>02</small><span data-w5-nav-label="nav2"></span></a></li>
+              <li><a class="nav-link" href="#w5-s3" data-section="w5-s3"><small>03</small><span data-w5-nav-label="nav3"></span></a></li>
+              <li><a class="nav-link" href="#w5-s4" data-section="w5-s4"><small>04</small><span data-w5-nav-label="nav4"></span></a></li>
+              <li><a class="nav-link" href="#w5-s5" data-section="w5-s5"><small>05</small><span data-w5-nav-label="nav5"></span></a></li>
             </ul>
           </div>
         </nav>
@@ -1065,6 +1075,7 @@
           <footer class="footer" data-od-id="w2-footer" data-w2="footer">AI 能力是概率性的 · Week 2 · 依据 week2_training.pdf 编排，四张截图取自原讲义。</footer>
         </div>
         <div id="week4Panel" class="week-panel" data-week="4" data-w4-owned data-od-id="week4-panel"></div>
+        <div id="week5Panel" class="week-panel" data-week="5" data-w5-owned data-od-id="week5-panel"></div>
       </main>
 
       <aside class="rail" data-od-id="right-rail">
@@ -1109,9 +1120,11 @@
 
   <script src="week4/course-data.js"></script>
   <script src="week4/lesson.js"></script>
+  <script src="week5/course-data.js"></script>
+  <script src="week5/lesson.js"></script>
   <script>
     (() => {
-      const panels = { 2: document.getElementById('week2Panel'), 3: document.getElementById('week3Panel'), 4: document.getElementById('week4Panel') };
+      const panels = { 2: document.getElementById('week2Panel'), 3: document.getElementById('week3Panel'), 4: document.getElementById('week4Panel'), 5: document.getElementById('week5Panel') };
       const weekTitle = document.getElementById('weekTitle');
       const weekLabel = document.getElementById('weekLabel');
       const prevWeek = document.getElementById('prevWeek');
@@ -1133,9 +1146,9 @@
       const requestedLanguage = new URLSearchParams(location.search).get('lang');
       let currentLanguage = ['zh-CN', 'zh-TW', 'en'].includes(requestedLanguage) ? requestedLanguage : ['zh-CN', 'zh-TW', 'en'].includes(savedLanguage) ? savedLanguage : 'zh-TW';
       const weekNames = {
-        'zh-CN': { 2: 'AI 能力是概率性的', 3: '五要素指令法', 4: '先问清楚，再写 Prompt' },
-        'zh-TW': { 2: 'AI 能力是機率性的', 3: '五要素指令法', 4: '先問清楚，再寫 Prompt' },
-        en: { 2: 'Probabilistic AI', 3: 'Five-part prompting', 4: 'Ask first, then prompt' }
+        'zh-CN': { 2: 'AI 能力是概率性的', 3: '五要素指令法', 4: '先问清楚，再写 Prompt', 5: '选对模型，给对材料' },
+        'zh-TW': { 2: 'AI 能力是機率性的', 3: '五要素指令法', 4: '先問清楚，再寫 Prompt', 5: '選對模型，給對材料' },
+        en: { 2: 'Probabilistic AI', 3: 'Five-part prompting', 4: 'Ask first, then prompt', 5: 'Models & material' }
       };
       const storageKey = 'prompt-structure-week3-state';
       let currentWeek = 3;
@@ -1253,9 +1266,9 @@
       };
       const baseTextNodes = new Map();
       const baseElementHTML = new Map();
-      document.querySelectorAll('p,h1,h2,h3,h4,strong,small,span,th,td,li,pre,blockquote,option,.footer,.panel-note').forEach(element => { if (!element.closest('[data-w4-owned]')) baseElementHTML.set(element, element.innerHTML); });
+      document.querySelectorAll('p,h1,h2,h3,h4,strong,small,span,th,td,li,pre,blockquote,option,.footer,.panel-note').forEach(element => { if (!element.closest('[data-w4-owned],[data-w5-owned]')) baseElementHTML.set(element, element.innerHTML); });
       const baseWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-        acceptNode: node => node.parentElement?.closest('script,style,[data-w4-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+        acceptNode: node => node.parentElement?.closest('script,style,[data-w4-owned],[data-w5-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
       });
       let baseNode;
       while ((baseNode = baseWalker.nextNode())) baseTextNodes.set(baseNode, baseNode.nodeValue);
@@ -1267,7 +1280,7 @@
         baseTextNodes.forEach((value, node) => { if (node.isConnected) node.nodeValue = value; });
       }
       function convertRemainingTraditional() {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,[data-w4-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,[data-w4-owned],[data-w5-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
         let node;
          while ((node = walker.nextNode())) {
            node.nodeValue = [...node.nodeValue].map(char => traditionalPairs[char] || char).join('');
@@ -1284,7 +1297,7 @@
         '输出': 'Output', '可检查性': 'Checkability', '缺件': 'Missing items', '看输出时只标四件事：': 'When checking the output, look for four things:', '成功的失败': 'a useful failure'
       };
       function translateEnglishPhrases() {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,pre,[data-w4-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: node => node.parentElement?.closest('script,style,pre,[data-w4-owned],[data-w5-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
         let node;
         while ((node = walker.nextNode())) {
           const trimmed = node.nodeValue.trim();
@@ -1455,6 +1468,7 @@
         applyW2Tables(currentLanguage);
         applyWeek2Language(currentLanguage);
         window.Week4Lesson?.render(currentLanguage);
+        window.Week5Lesson?.render(currentLanguage);
         syncSectionFromScroll();
         languageSelect.querySelectorAll('option').forEach((option, index) => { if (languageOptions[index]) option.textContent = languageOptions[index]; });
         localStorage.setItem(languageKey, currentLanguage);
@@ -1484,7 +1498,7 @@
       desktopMedia.addEventListener?.('change', syncDesktopCanvas);
 
       function setWeek(week, writeHash = true) {
-        currentWeek = Math.max(2, Math.min(4, week));
+        currentWeek = Math.max(2, Math.min(5, week));
         document.documentElement.dataset.week = String(currentWeek);
         Object.entries(panels).forEach(([key, panel]) => panel.classList.toggle('is-visible', Number(key) === currentWeek));
         document.querySelectorAll('.nav-week').forEach(nav => nav.toggleAttribute('hidden', nav.dataset.navWeek !== String(currentWeek)));
@@ -1492,12 +1506,12 @@
         weekLabel.textContent = `WEEK ${currentWeek}`;
         weekTitle.textContent = weekNames[currentLanguage][currentWeek];
         prevWeek.disabled = currentWeek === 2;
-        nextWeek.disabled = currentWeek === 4;
+        nextWeek.disabled = currentWeek === 5;
         if (writeHash) { history.replaceState(null, '', `#week-${currentWeek}`); window.scrollTo({ top: 0, behavior: 'instant' }); }
         localStorage.setItem(storageKey, JSON.stringify({ week: currentWeek, section: localStorage.getItem(`${storageKey}-section`) || 'section-1' }));
         lastSyncedSection = null;
         syncSectionFromScroll();
-        document.title = currentLanguage === 'en'
+        document.title = currentWeek === 5 ? `${weekNames[currentLanguage][5]} · Week 5` : currentLanguage === 'en'
           ? `Prompt Structure · Week ${currentWeek}`
           : currentLanguage === 'zh-TW'
             ? `Prompt 結構學 · Week ${currentWeek}`
@@ -1583,7 +1597,8 @@
       const week2SectionIds = ['w2-s1', 'w2-s2', 'w2-s3', 'w2-s4', 'w2-s5', 'w2-s6', 'w2-s7', 'w2-s8'];
       const week3SectionIds = ['section-1', 'section-2', 'section-4', 'section-5', 'section-6'];
       const week4SectionIds = ['w4-s1', 'w4-s2', 'w4-s3', 'w4-s4', 'w4-s5', 'w4-s6', 'w4-s7', 'w4-s8'];
-      const weekSectionMap = { 2: week2SectionIds, 3: week3SectionIds, 4: week4SectionIds };
+      const week5SectionIds = ['w5-s1', 'w5-s2', 'w5-s3', 'w5-s4', 'w5-s5'];
+      const weekSectionMap = { 2: week2SectionIds, 3: week3SectionIds, 4: week4SectionIds, 5: week5SectionIds };
 
       const w2HtmlKeys = new Set(['title', 'shot1Cap', 'shot2Cap', 'shot3Cap', 'shot4Cap']);
       const week2Copy = {
@@ -1848,6 +1863,10 @@
           const el = document.getElementById(id);
           if (el && el.getBoundingClientRect().top <= anchor) activeMain = id;
         });
+        // A short final section may never reach the scroll anchor, even at the page end.
+        if (window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 3) {
+          activeMain = mainIds[mainIds.length - 1];
+        }
         let activeSub = null;
         (weekSubMap[currentWeek] || []).forEach(id => {
           const el = document.getElementById(id);
@@ -1871,15 +1890,15 @@
       window.addEventListener('resize', requestScrollSync, { passive: true });
 
       const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
-      const hashWeek = /^#week-(2|3|4)$/.exec(location.hash);
-      const hashSectionWeek = /^#w4-s/.test(location.hash) ? 4 : /^#w2-/.test(location.hash) ? 2 : /^(#section-|#role$|#context$|#task$|#format$|#example$)/.test(location.hash) ? 3 : null;
+      const hashWeek = /^#week-(2|3|4|5)$/.exec(location.hash);
+      const hashSectionWeek = /^#w5-s/.test(location.hash) ? 5 : /^#w4-s/.test(location.hash) ? 4 : /^#w2-/.test(location.hash) ? 2 : /^(#section-|#role$|#context$|#task$|#format$|#example$)/.test(location.hash) ? 3 : null;
       setWeek(hashWeek ? Number(hashWeek[1]) : hashSectionWeek || Number(saved.week) || 2, false);
       syncSectionFromScroll();
       window.addEventListener('load', requestScrollSync);
       languageSelect.addEventListener('change', event => applyLanguage(event.target.value));
       applyLanguage(currentLanguage);
       function followSectionHash() {
-        const explicitWeek = /^#week-(2|3|4)$/.exec(location.hash);
+        const explicitWeek = /^#week-(2|3|4|5)$/.exec(location.hash);
         if (explicitWeek) { setWeek(Number(explicitWeek[1]), false); window.scrollTo({top:0,behavior:'instant'}); return; }
         const target = document.getElementById(location.hash.slice(1));
         const targetWeek = Number(target?.closest('[data-week]')?.dataset.week);

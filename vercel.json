@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/week5/materials/caib-first-200-pages.pdf",
+      "destination": "https://github.com/xuwj23-art/sino-training/releases/download/week5-materials-2026-09-18/caib-first-200-pages.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/week5/week5-materials-and-prompts.zip",
+      "destination": "https://github.com/xuwj23-art/sino-training/releases/download/week5-materials-2026-09-18/week5-materials-and-prompts.zip",
+      "permanent": false
+    },
+    {
+      "source": "/tarining-station.html",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
+}
